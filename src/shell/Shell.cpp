@@ -1224,6 +1224,12 @@ static void parseArguments(int argc, const char* argv[], ParseOptions& options)
                 } else if (strcmp(argv[i], "--jit-no-reg-alloc") == 0) {
                     s_JITFlags |= JITFlagValue::disableRegAlloc;
                     continue;
+                } else if (strcmp(argv[i], "--jit-hybrid") == 0) {
+                    s_JITFlags |= JITFlagValue::useJITHybrid;
+                    continue;
+                } else if (strcmp(argv[i], "--jit-hybrid-verbose") == 0) {
+                    s_JITFlags |= JITFlagValue::JITHybridVerbose;
+                    continue;
 #endif
                 } else if (strcmp(argv[i], "--enable-web-assembly3") == 0) {
                     s_FeatureFlags |= wabt::FeatureFlagValue::enableWebAssembly3;
@@ -1261,6 +1267,8 @@ static void parseArguments(int argc, const char* argv[], ParseOptions& options)
                     fprintf(stdout, "\t--jit\n\t\tEnable just-in-time interpretation.\n\n");
                     fprintf(stdout, "\t--jit-verbose\n\t\tEnable verbose output for just-in-time interpretation.\n\n");
                     fprintf(stdout, "\t--jit-verbose-color\n\t\tEnable colored verbose output for just-in-time interpretation.\n\n");
+                    fprintf(stdout, "\t--jit-hybrid\n\t\tHybrid JIT/interpreter mode. Walrus runs an embedded decision-tree\n\t\tpredictor on the input wasm and JIT-compiles only the predicted hot\n\t\tfunctions. The model is baked in at build time from\n\t\tsrc/decision_model/jit_model.joblib via export_model.py.\n\n");
+                    fprintf(stdout, "\t--jit-hybrid-verbose\n\t\tPrint which functions are selected for JIT under --jit-hybrid.\n\n");
                     fprintf(stdout, "\t--enable-web-assembly3\n\t\tEnable support for web assembly3 features.\n\n");
                     fprintf(stdout, "\t--mapdirs <HOST_DIR> <VIRTUAL_DIR>\n\t\tMap real directories to virtual ones for WASI functions to use.\n\t\tExample: ./walrus test.wasm --mapdirs this/real/directory/ this/virtual/directory\n\n");
                     fprintf(stdout, "\t--env\n\t\tShare host environment to walrus WASI.\n\n");
