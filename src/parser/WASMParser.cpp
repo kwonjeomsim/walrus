@@ -3854,12 +3854,6 @@ public:
 
 namespace Walrus {
 
-// Hybrid JIT: if non-empty, only these function indices are JIT-compiled;
-// the rest run on the interpreter. Populated by predictJITCandidates() per file.
-#if defined(WALRUS_ENABLE_JIT)
-static std::vector<uint32_t> s_jitHybridIndices;
-#endif
-
 WASMParsingResult::WASMParsingResult()
     : m_seenStartAttribute(false)
     , m_typesAddedToStore(false)
@@ -3938,7 +3932,8 @@ std::pair<Optional<Module*>, std::string> WASMParser::parseBinary(Store* store, 
     if (JITFlags & JITFlagValue::useJIT) {
         module->jitCompile(nullptr, 0, JITFlags);
     } else if (JITFlags & JITFlagValue::useJITHybrid) {
-        if (!predictJITCandidates(data, len, s_jitHybridIndices)) {
+        std::vector<uint32_t> jitHybridIndices;
+        if (!predictJITCandidates(data, len, jitHybridIndices)) {
             fprintf(stderr, "warning: --jit-hybrid: predictor failed to parse %s; falling back to interpreter\n",
                     filename.c_str());
             return std::make_pair(module, std::string());
@@ -3946,20 +3941,17 @@ std::pair<Optional<Module*>, std::string> WASMParser::parseBinary(Store* store, 
 
         size_t totalFns = module->numberOfFunctions();
         std::vector<ModuleFunction*> selected;
-        selected.reserve(s_jitHybridIndices.size());
-        for (uint32_t idx : s_jitHybridIndices) {
+        selected.reserve(jitHybridIndices.size());
+        for (uint32_t idx : jitHybridIndices) {
             if (idx < totalFns) {
                 selected.push_back(module->function(idx));
-            } else if (JITFlags & JITFlagValue::JITHybridVerbose) {
-                fprintf(stderr, "warning: --jit-hybrid index %u out of range (module has %zu functions)\n",
-                        idx, totalFns);
             }
         }
 
         if (JITFlags & JITFlagValue::JITHybridVerbose) {
             printf("[jit-hybrid] JIT-compiling %zu / %zu functions (indices:",
-                    selected.size(), totalFns);
-            for (uint32_t idx : s_jitHybridIndices) {
+                   selected.size(), totalFns);
+            for (uint32_t idx : jitHybridIndices) {
                 if (idx < totalFns) {
                     printf(" %u", idx);
                 }

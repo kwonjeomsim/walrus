@@ -1,5 +1,21 @@
+/*
+ * Copyright (c) 2022-present Samsung Electronics Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "JITPredictor.h"
-#include "jit_model_data.h"
+#include "JITModelData.h"
 
 #include "wabt/binary-reader.h"
 #include "wabt/binary-reader-nop.h"
@@ -9,7 +25,6 @@
 
 #include <algorithm>
 #include <queue>
-#include <unordered_map>
 
 namespace Walrus {
 
@@ -30,35 +45,35 @@ struct FuncFeature {
     int32_t loop_count = 0;
     int32_t branch_count = 0;
 
-    float feature(int idx) const
+    int32_t feature(int idx) const
     {
         switch (idx) {
         case 0:
-            return float(call_frequency);
+            return call_frequency;
         case 1:
-            return float(call_freq_x_body);
+            return call_freq_x_body;
         case 2:
-            return float(local_count);
+            return local_count;
         case 3:
-            return float(call_indirect_count);
+            return call_indirect_count;
         case 4:
-            return float(call_graph_depth);
+            return call_graph_depth;
         case 5:
-            return float(loop_count);
+            return loop_count;
         case 6:
-            return float(branch_count);
+            return branch_count;
         default:
-            return 0.0f;
+            return 0;
         }
     }
 };
 
 class FeatureCollector : public wabt::BinaryReaderNop {
 public:
-    wabt::Result OnImportFunc(wabt::Index /*import_index*/,
-                              nonstd::string_view /*module_name*/,
-                              nonstd::string_view /*field_name*/,
-                              wabt::Index func_index, wabt::Index /*sig_index*/) override
+    wabt::Result OnImportFunc(wabt::Index import_index,
+                              nonstd::string_view module_name,
+                              nonstd::string_view field_name,
+                              wabt::Index func_index, wabt::Index sig_index) override
     {
         ensureFunc(func_index);
         if (m_isImport.size() <= func_index) {
@@ -68,14 +83,14 @@ public:
         return wabt::Result::Ok;
     }
 
-    wabt::Result OnFunction(wabt::Index index, wabt::Index /*sig_index*/) override
+    wabt::Result OnFunction(wabt::Index index, wabt::Index sig_index) override
     {
         ensureFunc(index);
         return wabt::Result::Ok;
     }
 
-    wabt::Result OnExport(wabt::Index /*index*/, wabt::ExternalKind kind,
-                          wabt::Index item_index, nonstd::string_view /*name*/) override
+    wabt::Result OnExport(wabt::Index index, wabt::ExternalKind kind,
+                          wabt::Index item_index, nonstd::string_view name) override
     {
         if (kind == wabt::ExternalKind::Func) {
             m_exportedFuncs.push_back(static_cast<uint32_t>(item_index));
@@ -83,15 +98,15 @@ public:
         return wabt::Result::Ok;
     }
 
-    wabt::Result BeginFunctionBody(wabt::Index index, wabt::Offset /*size*/) override
+    wabt::Result BeginFunctionBody(wabt::Index index, wabt::Offset size) override
     {
         ensureFunc(index);
         m_curFunc = static_cast<int32_t>(index);
         return wabt::Result::Ok;
     }
 
-    wabt::Result OnLocalDecl(wabt::Index /*decl_index*/, wabt::Index count,
-                             wabt::Type /*type*/) override
+    wabt::Result OnLocalDecl(wabt::Index decl_index, wabt::Index count,
+                             wabt::Type type) override
     {
         if (m_curFunc >= 0) {
             m_funcs[m_curFunc].local_count += static_cast<int32_t>(count);
@@ -99,7 +114,7 @@ public:
         return wabt::Result::Ok;
     }
 
-    wabt::Result OnOpcode(wabt::Opcode /*opcode*/) override
+    wabt::Result OnOpcode(wabt::Opcode opcode) override
     {
         if (m_curFunc >= 0) {
             m_funcs[m_curFunc].body_size++;
@@ -107,7 +122,7 @@ public:
         return wabt::Result::Ok;
     }
 
-    wabt::Result OnLoopExpr(wabt::Type /*sig_type*/) override
+    wabt::Result OnLoopExpr(wabt::Type sig_type) override
     {
         if (m_curFunc >= 0) {
             m_funcs[m_curFunc].loop_count++;
@@ -115,7 +130,7 @@ public:
         return wabt::Result::Ok;
     }
 
-    wabt::Result OnBrExpr(wabt::Index /*depth*/) override
+    wabt::Result OnBrExpr(wabt::Index depth) override
     {
         if (m_curFunc >= 0) {
             m_funcs[m_curFunc].branch_count++;
@@ -123,7 +138,7 @@ public:
         return wabt::Result::Ok;
     }
 
-    wabt::Result OnBrIfExpr(wabt::Index /*depth*/) override
+    wabt::Result OnBrIfExpr(wabt::Index depth) override
     {
         if (m_curFunc >= 0) {
             m_funcs[m_curFunc].branch_count++;
@@ -131,9 +146,9 @@ public:
         return wabt::Result::Ok;
     }
 
-    wabt::Result OnBrTableExpr(wabt::Index /*num_targets*/,
-                               wabt::Index* /*target_depths*/,
-                               wabt::Index /*default_target_depth*/) override
+    wabt::Result OnBrTableExpr(wabt::Index num_targets,
+                               wabt::Index* target_depths,
+                               wabt::Index default_target_depth) override
     {
         if (m_curFunc >= 0) {
             m_funcs[m_curFunc].branch_count++;
@@ -151,7 +166,7 @@ public:
         return wabt::Result::Ok;
     }
 
-    wabt::Result OnCallIndirectExpr(wabt::Index /*sig_index*/, wabt::Index /*table_index*/) override
+    wabt::Result OnCallIndirectExpr(wabt::Index sig_index, wabt::Index table_index) override
     {
         if (m_curFunc >= 0) {
             m_funcs[m_curFunc].call_indirect_count++;
@@ -159,24 +174,27 @@ public:
         return wabt::Result::Ok;
     }
 
-    wabt::Result EndFunctionBody(wabt::Index /*index*/) override
+    wabt::Result EndFunctionBody(wabt::Index index) override
     {
         m_curFunc = -1;
         return wabt::Result::Ok;
     }
 
-    void finalize()
+    void recordRestFeatures()
     {
-        for (size_t i = 0; i < m_funcs.size(); ++i) {
+        const size_t N = m_funcs.size();
+        for (size_t i = 0; i < N; ++i) {
             m_funcs[i].index = static_cast<int32_t>(i);
         }
         for (const auto& e : m_callEdges) {
-            if (e.second < m_funcs.size()) {
+            if (e.second < N) {
                 m_funcs[e.second].call_frequency++;
             }
-            m_adj[e.first].push_back(e.second);
         }
-        bfsDepths();
+        std::vector<std::pair<uint32_t, uint32_t>>().swap(m_callEdges);
+
+        setCallGraphDepths(N);
+        std::vector<uint32_t>().swap(m_adjList);
         for (auto& f : m_funcs) {
             f.call_freq_x_body = f.call_frequency * f.body_size;
         }
@@ -196,11 +214,11 @@ private:
         }
     }
 
-    void bfsDepths()
+    void setCallGraphDepths(size_t N)
     {
         std::queue<uint32_t> q;
         for (uint32_t e : m_exportedFuncs) {
-            if (e < m_funcs.size() && m_funcs[e].call_graph_depth == -1) {
+            if (e < N && m_funcs[e].call_graph_depth == -1) {
                 m_funcs[e].call_graph_depth = 0;
                 q.push(e);
             }
@@ -208,12 +226,8 @@ private:
         while (!q.empty()) {
             uint32_t u = q.front();
             q.pop();
-            auto it = m_adj.find(u);
-            if (it == m_adj.end()) {
-                continue;
-            }
-            for (uint32_t v : it->second) {
-                if (v < m_funcs.size() && m_funcs[v].call_graph_depth == -1) {
+            for (uint32_t v : m_adjList) {
+                if (v < N && m_funcs[v].call_graph_depth == -1) {
                     m_funcs[v].call_graph_depth = m_funcs[u].call_graph_depth + 1;
                     q.push(v);
                 }
@@ -225,7 +239,7 @@ private:
     std::vector<bool> m_isImport;
     std::vector<uint32_t> m_exportedFuncs;
     std::vector<std::pair<uint32_t, uint32_t>> m_callEdges;
-    std::unordered_map<uint32_t, std::vector<uint32_t>> m_adj;
+    std::vector<uint32_t> m_adjList;
     int32_t m_curFunc = -1;
 };
 
@@ -233,13 +247,11 @@ int evaluateTree(const FuncFeature& f)
 {
     using namespace JITPredictorModel;
     int n = 0;
-    // The tree is a finite DAG; node count bounds the loop, but we cap iterations
-    // defensively in case of malformed data.
     for (int i = 0; i <= kNodeCount; ++i) {
         if (kNodeFeature[n] < 0) {
-            return kNodeLeft[n];
+            return kNodeLeft[n]; // leaf node
         }
-        float v = f.feature(kNodeFeature[n]);
+        int32_t v = f.feature(kNodeFeature[n]);
         n = (v <= kNodeThreshold[n]) ? kNodeLeft[n] : kNodeRight[n];
     }
     return 0;
@@ -254,14 +266,12 @@ bool predictJITCandidates(const uint8_t* wasm, size_t size,
     FeatureCollector reader;
     wabt::Features features;
     features.EnableAll();
-    wabt::ReadBinaryOptions options(features, /*log_stream=*/nullptr,
-                                    /*read_debug_names=*/false,
-                                    /*stop_on_first_error=*/true,
-                                    /*fail_on_custom_section_error=*/false);
+    wabt::ReadBinaryOptions options(features, nullptr, false, false, false);
+
     if (wabt::Failed(wabt::ReadBinary(wasm, size, &reader, options))) {
         return false;
     }
-    reader.finalize();
+    reader.recordRestFeatures();
 
     for (const auto& f : reader.funcs()) {
         const uint32_t idx = static_cast<uint32_t>(f.index);

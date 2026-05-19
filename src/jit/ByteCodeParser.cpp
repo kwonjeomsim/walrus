@@ -3702,7 +3702,7 @@ void Module::jitCompile(ModuleFunction** functions, size_t functionsLength, uint
     } else {
         do {
             if ((*functions)->jitFunction() == nullptr) {
-                if (JITFlags & JITFlagValue::JITVerbose) {
+                if (JITFlags & JITFlagValue::JITVerbose || JITFlags & JITFlagValue::JITHybridVerbose) {
                     printf("[[[[[[[  Function %p  ]]]]]]]\n", *functions);
                 }
 
