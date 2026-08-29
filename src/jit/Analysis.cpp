@@ -37,7 +37,112 @@ struct DependencyGenContext {
 
     static const VariableRef kNoRef = ~(VariableRef)0;
 
-    typedef std::set<VariableRef> DependencyList;
+    class DependencyList {
+    public:
+        DependencyList()
+            : m_inline{ 0, 0 }
+        {
+        }
+
+        // DependencyList is not available for copy, since it may double freed.
+        DependencyList(const DependencyList&) = delete;
+        DependencyList& operator=(const DependencyList&) = delete;
+
+        DependencyList(DependencyList&& other) noexcept
+            : m_inline{ other.m_inline[0], other.m_inline[1] }
+        {
+            other.m_inline[0] = 0;
+            other.m_inline[1] = 0;
+        }
+
+        ~DependencyList()
+        {
+            if (isSpilled()) {
+                delete spilled();
+            }
+        }
+
+        size_t size() const
+        {
+            if (isSpilled()) {
+                return spilled()->size();
+            }
+            return m_inline[0] == 0 ? 0 : (m_inline[1] == 0 ? 1 : 2);
+        }
+
+        class const_iterator {
+        public:
+            const_iterator(const VariableRef* current)
+                : m_isSpilled(false)
+                , m_current(current)
+            {
+            }
+
+            const_iterator(std::set<VariableRef>::const_iterator current)
+                : m_isSpilled(true)
+                , m_current(nullptr)
+                , m_spilledCurrent(current)
+            {
+            }
+
+            VariableRef operator*() const { return m_isSpilled ? *m_spilledCurrent : *m_current; }
+
+            const_iterator& operator++()
+            {
+                if (m_isSpilled) {
+                    ++m_spilledCurrent;
+                } else {
+                    ++m_current;
+                }
+                return *this;
+            }
+
+            bool operator!=(const const_iterator& other) const
+            {
+                return m_isSpilled ? m_spilledCurrent != other.m_spilledCurrent : m_current != other.m_current;
+            }
+
+        private:
+            bool m_isSpilled;
+            const VariableRef* m_current;
+            std::set<VariableRef>::const_iterator m_spilledCurrent;
+        };
+
+        const_iterator begin() const
+        {
+            return isSpilled() ? const_iterator(spilled()->begin()) : const_iterator(m_inline);
+        }
+
+        const_iterator end() const
+        {
+            return isSpilled() ? const_iterator(spilled()->end()) : const_iterator(m_inline + size());
+        }
+
+        void clear()
+        {
+            if (isSpilled()) {
+                delete spilled();
+            }
+            m_inline[0] = 0;
+            m_inline[1] = 0;
+        }
+
+        // Returns true when ref was not present yet.
+        bool insert(VariableRef ref);
+
+    private:
+        // Label refs are pointers (low bits 0) and variable refs end in 1,
+        // so 2 is free to mark a spilled set. A ref is never 0.
+        static const VariableRef kSpilledTag = 2;
+
+        bool isSpilled() const { return (m_inline[0] & 0x3) == kSpilledTag; }
+        std::set<VariableRef>* spilled() const
+        {
+            return reinterpret_cast<std::set<VariableRef>*>(m_inline[0] & ~static_cast<VariableRef>(0x3));
+        }
+
+        VariableRef m_inline[2];
+    };
 
     DependencyGenContext(size_t dependencySize, size_t requiredStackSize)
     {
@@ -67,6 +172,48 @@ struct DependencyGenContext {
     std::vector<VariableRef> currentDependencies;
     std::vector<uint8_t> currentOptions;
 };
+
+bool DependencyGenContext::DependencyList::insert(VariableRef ref)
+{
+    ASSERT(ref != 0 && (ref & 0x3) != kSpilledTag);
+
+    if (isSpilled()) {
+        return spilled()->insert(ref).second;
+    }
+
+    if (m_inline[0] == 0) {
+        m_inline[0] = ref;
+        return true;
+    }
+
+    if (m_inline[0] == ref) {
+        return false;
+    }
+
+    if (m_inline[1] == 0) {
+        if (ref < m_inline[0]) {
+            m_inline[1] = m_inline[0];
+            m_inline[0] = ref;
+        } else {
+            m_inline[1] = ref;
+        }
+        return true;
+    }
+
+    if (m_inline[1] == ref) {
+        return false;
+    }
+
+    std::set<VariableRef>* set = new std::set<VariableRef>();
+
+    set->insert(m_inline[0]);
+    set->insert(m_inline[1]);
+    set->insert(ref);
+
+    m_inline[0] = reinterpret_cast<VariableRef>(set) | kSpilledTag;
+    m_inline[1] = 0;
+    return true;
+}
 
 void DependencyGenContext::update(size_t dependencyStart, size_t id)
 {
@@ -163,7 +310,7 @@ void DependencyGenContext::assignReference(VariableRef ref, size_t offset, uint3
     currentOptions[offset] = 0;
 }
 
-static bool checkSameConst(VariableList* variableList, std::set<VariableRef>& dependencies)
+static bool checkSameConst(VariableList* variableList, DependencyGenContext::DependencyList& dependencies)
 {
     VariableRef constRef = 0;
     Instruction* constInstr = nullptr;
@@ -583,7 +730,7 @@ void JITCompiler::buildVariables(uint32_t requiredStackSize)
             }
 
             std::vector<Label*> unprocessedLabels;
-            std::set<VariableRef>& dependencies = dependencyCtx.dependencies[i];
+            DependencyGenContext::DependencyList& dependencies = dependencyCtx.dependencies[i];
 
             for (auto it : dependencies) {
                 if (VARIABLE_TYPE(it) == DependencyGenContext::Label) {
@@ -593,12 +740,12 @@ void JITCompiler::buildVariables(uint32_t requiredStackSize)
 
             while (!unprocessedLabels.empty()) {
                 Label* label = unprocessedLabels.back();
-                std::set<VariableRef>& list = dependencyCtx.dependencies[i - dependencyStart + label->m_dependencyStart];
+                DependencyGenContext::DependencyList& list = dependencyCtx.dependencies[i - dependencyStart + label->m_dependencyStart];
 
                 unprocessedLabels.pop_back();
 
                 for (auto it : list) {
-                    if (dependencies.insert(it).second) {
+                    if (dependencies.insert(it)) {
                         if (VARIABLE_TYPE(it) == DependencyGenContext::Label) {
                             unprocessedLabels.push_back(VARIABLE_GET_LABEL(it));
                         }

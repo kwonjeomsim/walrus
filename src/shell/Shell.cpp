@@ -266,9 +266,9 @@ static Trap::TrapResult executeWASM(Store* store, const std::string& filename, c
             } else if (import->fieldName() == "global_i64") {
                 importValues.push_back(Global::createGlobal(store, Value(int64_t(666)), MutableType(Value::I64, false)));
             } else if (import->fieldName() == "global_f32") {
-                importValues.push_back(Global::createGlobal(store, Value(float(0x44268000)), MutableType(Value::F32, false)));
+                importValues.push_back(Global::createGlobal(store, Value((float)666.6), MutableType(Value::F32, false)));
             } else if (import->fieldName() == "global_f64") {
-                importValues.push_back(Global::createGlobal(store, Value(double(0x4084d00000000000)), MutableType(Value::F64, false)));
+                importValues.push_back(Global::createGlobal(store, Value((double)666.6), MutableType(Value::F64, false)));
             } else if (import->fieldName() == "table") {
                 importValues.push_back(Table::createTable(store, Value::Type::NullFuncRef, 10, 20, false));
             } else if (import->fieldName() == "table64") {
@@ -910,17 +910,37 @@ static void executeWAST(Store* store, const std::string& filename, const std::ve
         switch (command->type) {
         case wabt::CommandType::Module:
         case wabt::CommandType::ScriptModule: {
-            auto* moduleCommand = static_cast<wabt::ModuleCommand*>(command.get());
-            auto buf = readModuleData(&moduleCommand->module);
-            auto trapResult = executeWASM(store, filename, buf->data, &registeredInstanceMap);
-            if (trapResult.exception) {
-                std::string& errorMessage = trapResult.exception->message();
-                printf("Error: %s\n", errorMessage.c_str());
-                RELEASE_ASSERT_NOT_REACHED();
+            wabt::Module* module;
+            bool is_definition;
+
+            if (command->type == wabt::CommandType::Module) {
+                auto* moduleCommand = static_cast<wabt::ModuleCommand*>(command.get());
+                module = &moduleCommand->module;
+                is_definition = moduleCommand->is_definition;
+            } else {
+                auto* scriptModuleCommand = static_cast<wabt::ScriptModuleCommand*>(command.get());
+                module = &scriptModuleCommand->module;
+                is_definition = scriptModuleCommand->script_module->is_definition;
             }
-            instanceMap[commandCount] = store->getLastInstance();
-            if (moduleCommand->module.name.size()) {
-                registeredInstanceMap[moduleCommand->module.name] = store->getLastInstance();
+            auto buf = readModuleData(module);
+
+            if (!is_definition) {
+                auto trapResult = executeWASM(store, filename, buf->data, &registeredInstanceMap);
+                if (trapResult.exception) {
+                    std::string& errorMessage = trapResult.exception->message();
+                    printf("Error: %s\n", errorMessage.c_str());
+                    RELEASE_ASSERT_NOT_REACHED();
+                }
+                instanceMap[commandCount] = store->getLastInstance();
+                if (module->name.size()) {
+                    registeredInstanceMap[module->name] = store->getLastInstance();
+                }
+            } else {
+                auto parseResult = WASMParser::parseBinary(store, filename, buf->data.data(), buf->data.size(), s_JITFlags, s_FeatureFlags);
+                if (!parseResult.second.empty()) {
+                    printf("Error: %s\n", parseResult.second.c_str());
+                    RELEASE_ASSERT_NOT_REACHED();
+                }
             }
             break;
         }
@@ -1052,25 +1072,24 @@ static void executeWAST(Store* store, const std::string& filename, const std::ve
                 wabt::Features features;
                 features.EnableAll();
                 wabt::WastParseOptions options(features);
-                std::unique_ptr<wabt::Module> m;
+                std::unique_ptr<wabt::Module> module;
                 auto lexer = wabt::WastLexer::CreateBufferLexer(filename, qsm->data.data(), qsm->data.size(), &errors);
-                auto result = wabt::ParseWatModule(lexer.get(), &m, &errors, &options);
-                if (result != wabt::Result::Error) {
-                    printf("Parsing WAT returned Ok (in wabt::CommandType::AssertInvalid case)\n");
-                    printf("Expected exception:%s\n", assertModuleInvalid->text.data());
+                auto result = wabt::ParseWatModule(lexer.get(), &module, &errors, &options);
+                if (result != wabt::Result::Ok) {
+                    printf("Parsing WAT returned Error (in wabt::CommandType::AssertInvalid case)\n");
                     RELEASE_ASSERT_NOT_REACHED();
                 }
-                printf("assertModuleInvalid (expect compile error: '%s', actual '%s'(line: %d)) : OK\n", assertModuleInvalid->text.data(), errors[0].message.c_str(), errors[0].loc.line);
-                break;
+                auto output = readModuleData(module.get());
+                buf = output->data;
             }
-            auto trapResult = executeWASM(store, filename, buf);
-            if (trapResult.exception == nullptr) {
-                printf("Execute WASM returned nullptr (in wabt::CommandType::AssertInvalid case)\n");
+
+            auto parseResult = WASMParser::parseBinary(store, filename, buf.data(), buf.size(), s_JITFlags, s_FeatureFlags);
+            if (parseResult.second.empty()) {
+                printf("Binary parsing and validation returned Ok (in wabt::CommandType::AssertInvalid case)\n");
                 printf("Expected exception:%s\n", assertModuleInvalid->text.data());
                 RELEASE_ASSERT_NOT_REACHED();
             }
-            std::string& actual = trapResult.exception->message();
-            printf("assertModuleInvalid (expect compile error: '%s', actual '%s'(line: %d)) : OK\n", assertModuleInvalid->text.data(), actual.data(), assertModuleInvalid->module->location().line);
+            printf("assertModuleInvalid (expect compile error: '%s', actual '%s'(line: %d)) : OK\n", assertModuleInvalid->text.data(), parseResult.second.c_str(), assertModuleInvalid->module->location().line);
             break;
         }
         case wabt::CommandType::AssertMalformed: {

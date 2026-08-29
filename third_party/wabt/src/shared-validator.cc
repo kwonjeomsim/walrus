@@ -1683,6 +1683,12 @@ Result SharedValidator::OnSelect(const Location& loc,
   return result;
 }
 
+Result SharedValidator::OnSelectCondition(const Location& loc) {
+  Result result = CheckInstr(Opcode::Select, loc);
+  result |= typechecker_.OnSelectCondition();
+  return result;
+}
+
 Result SharedValidator::OnSimdLaneOp(const Location& loc,
                                      Opcode opcode,
                                      uint64_t value) {
@@ -2711,7 +2717,7 @@ Result SharedComponentValidator::OnCanonType(
   auto type_value = MakeUnique<TypeBase>(TypeDef::CoreFunc);
   CurrentAsComponent()->core_funcs.push_back(type_value.get());
   objects_.push_back(std::move(type_value));
-  return Result::Ok;
+  return result;
 }
 
 Result SharedComponentValidator::OnImport(
@@ -2731,7 +2737,7 @@ Result SharedComponentValidator::OnImport(
   }
   current_->imports.push_back(
       TypeExternalList::External{import_name, sort, type_base});
-  return Result::Ok;
+  return result;
 }
 
 Result SharedComponentValidator::OnExport(const ComponentStringLoc& name,
@@ -2763,7 +2769,7 @@ Result SharedComponentValidator::OnExport(const ComponentStringLoc& name,
   }
   current_->exports.push_back(
       TypeExternalList::External{export_name, sort, type_base});
-  return Result::Ok;
+  return result;
 }
 
 void SharedComponentValidator::CoreModuleAddFunctionExport(

@@ -26,9 +26,91 @@
 
 #define WASI_STDIN 0
 #define WASI_STDOUT 1
-#define WASI_STDERR 0
+#define WASI_STDERR 2
 
 namespace Walrus {
+
+enum FileType : uint32_t {
+    Unknown,
+    BlockDevice,
+    CharacterDevice,
+    Directory,
+    Fifo,
+    SymbolicLink,
+    RegularFile,
+    Socket,
+};
+
+enum ResultTypes : uint8_t {
+    resultOk = 0,
+    resultError = 1,
+};
+
+enum OptionalTypes : uint8_t {
+    optionalNone = 0,
+    optionalSome = 1,
+};
+
+enum StreamErrorTypes : uint8_t {
+    streamErrLastOperationFailed = 0,
+    streamErrClosed = 1,
+};
+
+enum DescriptorFlags : uint32_t {
+    flagRead = 1 << 0,
+    flagWrite = 1 << 1,
+    flagFileIntegritySync = 1 << 2,
+    flagDataIntegritySync = 1 << 3,
+    flagRequestedWriteSync = 1 << 4,
+    flagMutateDirectory = 1 << 5,
+};
+
+enum OpenFlags : uint32_t {
+    openCreate = 1 << 0,
+    openDirectory = 1 << 1,
+    openExclusive = 1 << 2,
+    openTruncate = 1 << 3,
+};
+
+enum FilesystemError : int32_t {
+    access,
+    wouldBlock,
+    already,
+    badDescriptor,
+    busy,
+    deadlock,
+    quota,
+    exist,
+    fileTooLarge,
+    illegalByteSequence,
+    inProgress,
+    interrupted,
+    invalid,
+    io,
+    isDirectory,
+    loop,
+    tooManyLinks,
+    messageSize,
+    nameTooLong,
+    noDevice,
+    noEntry,
+    noLock,
+    insufficientMemory,
+    insufficientSpace,
+    notDirectory,
+    notEmpty,
+    notRecoverable,
+    unsupported,
+    noTty,
+    noSuchDevice,
+    overflow,
+    notPermitted,
+    pipe,
+    readOnly,
+    invalidSeek,
+    textFileBusy,
+    crossDevice
+};
 
 class WasiStoreData {
 public:
@@ -307,11 +389,11 @@ private:
 
 class ComponentResourceWasiDirectory : public ComponentResource {
 public:
-    ComponentResourceWasiDirectory(ComponentTypeResource* type, const std::string& mappedPath, const std::string& realPath, bool mut)
+    ComponentResourceWasiDirectory(ComponentTypeResource* type, const std::string& mappedPath, const std::string& realPath, int32_t flags)
         : ComponentResource(ResourceWasiDirectoryKind, type)
         , m_mappedPath(mappedPath)
         , m_realPath(realPath)
-        , m_mutable(mut)
+        , m_flags(flags)
     {
     }
 
@@ -325,21 +407,22 @@ public:
         return m_realPath;
     }
 
-    bool isMutable()
+    int32_t flags()
     {
-        return m_mutable;
+        return m_flags;
     }
 
 private:
     std::string m_mappedPath;
     std::string m_realPath;
-    bool m_mutable;
+    int32_t m_flags;
 };
 
 class LiftedWasiFunction : public LiftedFunction {
 public:
     enum Type {
         cliExit02,
+        ioErrorToDebugString02,
         ioPollableBlock02,
         ioPoll02,
         ioInputStreamRead02,
@@ -365,13 +448,17 @@ public:
         fileSystemDescriptorAppendViaStream02,
         fileSystemDescriptorGetFlags02,
         fileSystemDescriptorStat02,
+        fileSystemDescriptorStatAt02,
         fileSystemDescriptorOpenAt02,
         fileSystemDescriptorMetadataHash02,
+        fileSystemDescriptorMetadataHashAt02,
+        fileSystemDescriptorGetType02,
         fileSystemGetDirectories02,
         neuralNetworkTensorConstructor02,
         neuralNetworkInferenceGraphExecutionContextCompute,
         neuralNetworkGraphInitExectionContext02,
         neuralNetworkGraphLoad02,
+        fileSystemErrorCode02,
     };
 
     LiftedWasiFunction(Type type, ComponentInstance* instance, FunctionType* functionType)

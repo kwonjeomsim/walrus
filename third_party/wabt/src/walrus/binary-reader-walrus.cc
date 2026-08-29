@@ -81,17 +81,16 @@ struct Label {
 
 static Features getFeatures(const uint32_t featureFlags) {
     Features features;
-    features.enable_exceptions();
     features.enable_compact_imports();
     // TODO: should use command line flag for this (--enable-threads)
     features.enable_threads();
-    // TODO: should use command line flag for this (--enable-relaxed-simd)
-    features.enable_relaxed_simd();
     if (featureFlags & FeatureFlagValue::enableWebAssembly3) {
-        features.enable_tail_call();
         features.enable_gc();
-        features.enable_multi_memory();
-        features.enable_memory64();
+    } else {
+        features.disable_extended_const();
+        features.disable_tail_call();
+        features.disable_multi_memory();
+        features.disable_memory64();
     }
     return features;
 }
@@ -655,7 +654,7 @@ public:
         return Result::Ok;
     }
     void SubBlockCheck() {
-        if (WABT_UNLIKELY(m_externalDelegate->resumeGenerateByteCodeAfterNBlockEnd() == 1)) {
+        if (m_externalDelegate->resumeGenerateByteCodeAfterNBlockEnd() == 1) {
             m_externalDelegate->setResumeGenerateByteCodeAfterNBlockEnd(0);
             m_externalDelegate->setShouldContinueToGenerateByteCode(true);
         }
@@ -1587,9 +1586,24 @@ public:
         m_externalDelegate->OnThrowRefExpr();
         return Result::Ok;
     }
-    Result OnTryTableExpr(Type sig_type, const CatchClauseVector &catches) override
+    Result OnTryTableExpr(Type sig_type, const CatchClauseVector& catches) override
     {
-        abort();
+        uint32_t exn_stack_height;
+        CHECK_RESULT(m_validator.BeginTryTable(GetLocation(), sig_type));
+        CHECK_RESULT(m_validator.GetCatchCount(m_labelStack.size() - 1, &exn_stack_height));
+        EXECUTE_VALIDATOR(PushLabel(LabelKind::Try));
+
+        for (const auto& catchData : catches) {
+            TableCatch tableCatch;
+            tableCatch.kind = catchData.kind;
+            tableCatch.tag = Var(catchData.tag, GetLocation());
+            tableCatch.target = Var(catchData.depth, GetLocation());
+            CHECK_RESULT(m_validator.OnTryTableCatch(GetLocation(), tableCatch));
+        }
+        CHECK_RESULT(m_validator.EndTryTable(GetLocation(), sig_type));
+
+        SHOULD_GENERATE_BYTECODE;
+        m_externalDelegate->OnTryTableExpr(sig_type, catches);
         return Result::Ok;
     }
 
@@ -2058,7 +2072,7 @@ public:
                     const ComponentExternalInfo& external_info) override {
         CHECK_RESULT(m_validator.OnImport(name, version_suffix, external_info));
         m_externalDelegate->OnImport(name, version_suffix, external_info);
-        return Result::Ok;
+        return CheckParseError();
     }
 
     Result BeginExportSection(uint32_t count) override {

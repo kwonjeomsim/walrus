@@ -1274,9 +1274,11 @@ Result WastParser::ParseLimitsIndex(Limits* out_limits) {
 Result WastParser::ParseLimits(Limits* out_limits) {
   WABT_TRACE(ParseLimits);
 
-  CHECK_RESULT(ParseNat(&out_limits->initial, out_limits->is_64));
+  CHECK_RESULT(
+      ParseNat(&out_limits->initial, options_->features.memory64_enabled()));
   if (PeekMatch(TokenType::Nat)) {
-    CHECK_RESULT(ParseNat(&out_limits->max, out_limits->is_64));
+    CHECK_RESULT(
+        ParseNat(&out_limits->max, options_->features.memory64_enabled()));
     out_limits->has_max = true;
   } else {
     out_limits->has_max = false;
@@ -1620,6 +1622,31 @@ Result WastParser::ParseModuleFieldList(Module* module) {
 
 Result WastParser::ParseModuleField(Module* module) {
   WABT_TRACE(ParseModuleField);
+  // A field is only appended to the module once it has parsed successfully; a
+  // field that fails to parse is destroyed instead, so the deferred reference
+  // type resolutions registered while parsing it would point into freed
+  // memory. Remember where the resolve lists ended and drop those entries
+  // again if the field fails.
+  size_t ref_types_size = resolve_ref_types_.size();
+  size_t type_vectors_size = resolve_type_vectors_.size();
+  size_t funcs_size = resolve_funcs_.size();
+
+  Result result = ParseModuleFieldImpl(module);
+
+  if (Failed(result)) {
+    resolve_ref_types_.erase(resolve_ref_types_.begin() + ref_types_size,
+                             resolve_ref_types_.end());
+    resolve_type_vectors_.erase(
+        resolve_type_vectors_.begin() + type_vectors_size,
+        resolve_type_vectors_.end());
+    resolve_funcs_.erase(resolve_funcs_.begin() + funcs_size,
+                         resolve_funcs_.end());
+  }
+
+  return result;
+}
+
+Result WastParser::ParseModuleFieldImpl(Module* module) {
   switch (Peek(1)) {
     case TokenType::Data:   return ParseDataModuleField(module);
     case TokenType::Elem:   return ParseElemModuleField(module);
@@ -2476,6 +2503,11 @@ Result WastParser::ParseResultList(TypeVector* result_types,
 
 Result WastParser::ParseInstrList(ExprList* exprs) {
   WABT_TRACE(ParseInstrList);
+  // Keep going after a bad instruction so the rest of the errors get reported,
+  // but remember that one was dropped. Returning Ok here would tell the caller
+  // the field parsed cleanly when part of it was thrown away, and anything the
+  // discarded expressions registered for later would outlive them.
+  Result result = Result::Ok;
   ExprList new_exprs;
   while (true) {
     auto pair = PeekPair();
@@ -2483,19 +2515,21 @@ Result WastParser::ParseInstrList(ExprList* exprs) {
       if (Succeeded(ParseInstr(&new_exprs))) {
         exprs->splice(exprs->end(), new_exprs);
       } else {
+        result = Result::Error;
         CHECK_RESULT(Synchronize(IsInstr));
       }
     } else if (IsLparAnn(pair)) {
       if (Succeeded(ParseCodeMetadataAnnotation(&new_exprs))) {
         exprs->splice(exprs->end(), new_exprs);
       } else {
+        result = Result::Error;
         CHECK_RESULT(Synchronize(IsLparAnn));
       }
     } else {
       break;
     }
   }
-  return Result::Ok;
+  return result;
 }
 
 Result WastParser::ParseTerminatingInstrList(ExprList* exprs) {
@@ -2742,6 +2776,7 @@ Result WastParser::ParsePlainInstr(std::unique_ptr<Expr>* out_expr) {
       ResolveTypeVector result_type(&expr->result_type);
       if (options_->features.reference_types_enabled() &&
           PeekMatchLpar(TokenType::Result)) {
+        expr->result_type.clear();
         CHECK_RESULT(ParseResultList(&expr->result_type, &result_type.vars));
       }
       *out_expr = std::move(expr);
@@ -3861,15 +3896,17 @@ Result WastParser::ParseBlock(Block* block) {
 
 Result WastParser::ParseExprList(ExprList* exprs) {
   WABT_TRACE(ParseExprList);
+  Result result = Result::Ok;
   ExprList new_exprs;
   while (PeekMatchExpr()) {
     if (Succeeded(ParseExpr(&new_exprs))) {
       exprs->splice(exprs->end(), new_exprs);
     } else {
+      result = Result::Error;
       CHECK_RESULT(Synchronize(IsExpr));
     }
   }
-  return Result::Ok;
+  return result;
 }
 
 Result WastParser::ParseExpr(ExprList* exprs) {
@@ -5615,6 +5652,7 @@ Result WastParser::ParseModuleCommand(Script* script, CommandPtr* out_command) {
       auto command = MakeUnique<ModuleCommand>();
       module = &command->module;
       *module = std::move(cast<TextScriptModule>(script_module.get())->module);
+      command->is_definition = script_module->is_definition;
       *out_command = std::move(command);
       break;
     }
@@ -5802,6 +5840,7 @@ Result WastParser::ParseScriptModule(
   EXPECT(Lpar);
   Location loc = GetLocation();
   EXPECT(Module);
+  bool is_definition = Match(TokenType::Definition);
   std::string name;
   CHECK_RESULT(ParseBindVarOpt(&name));
 
@@ -5852,6 +5891,7 @@ Result WastParser::ParseScriptModule(
     }
   }
 
+  (*out_module)->is_definition = is_definition;
   EXPECT(Rpar);
   return Result::Ok;
 }

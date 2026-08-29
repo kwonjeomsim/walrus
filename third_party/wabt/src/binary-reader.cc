@@ -725,9 +725,12 @@ Result BinaryReader::ReadTable(Limits* out_elem_limits) {
            "memory64 not allowed");
   ERROR_UNLESS(unknown_flags == 0, "malformed table limits flag: %d", flags);
 
-  CHECK_RESULT(ReadU32OrU64Leb128(&initial, is_64, "table initial elem count"));
+  CHECK_RESULT(ReadU32OrU64Leb128(&initial,
+                                  options_.features.memory64_enabled(),
+                                  "table initial elem count"));
   if (has_max) {
-    CHECK_RESULT(ReadU32OrU64Leb128(&max, is_64, "table max elem count"));
+    CHECK_RESULT(ReadU32OrU64Leb128(&max, options_.features.memory64_enabled(),
+                                    "table max elem count"));
   }
 
   out_elem_limits->has_max = has_max;
@@ -919,6 +922,7 @@ Result BinaryReader::ReadInstructions(Offset end_offset, const char* context) {
       case Opcode::SelectT: {
         Index num_results;
         CHECK_RESULT(ReadCount(&num_results, "num result types"));
+        ERROR_IF(num_results == 0, "invalid arity in select instruction: 0.");
 
         result_types_.resize(num_results);
         for (Index i = 0; i < num_results; ++i) {
@@ -931,13 +935,8 @@ Result BinaryReader::ReadInstructions(Offset end_offset, const char* context) {
           result_types_[i] = result_type;
         }
 
-        if (num_results) {
-          CALLBACK(OnSelectExpr, num_results, result_types_.data());
-          CALLBACK(OnOpcodeType, result_types_[0]);
-        } else {
-          CALLBACK(OnSelectExpr, 0, NULL);
-          CALLBACK0(OnOpcodeBare);
-        }
+        CALLBACK(OnSelectExpr, num_results, result_types_.data());
+        CALLBACK(OnOpcodeType, result_types_[0]);
         break;
       }
 
@@ -2335,10 +2334,16 @@ Result BinaryReader::ReadNameSection(Offset section_size) {
     ReadEndRestoreGuard guard(this);
     read_end_ = subsection_end;
 
-    NameSectionSubsection type = static_cast<NameSectionSubsection>(name_type);
-    if (type <= NameSectionSubsection::Last) {
-      CALLBACK(OnNameSubsection, i, type, subsection_size);
+    if (name_type > static_cast<uint32_t>(NameSectionSubsection::Last)) {
+      // Unknown subsection, skip it.  Checked before the cast so that an
+      // out-of-range id never becomes a NameSectionSubsection.
+      state_.offset = subsection_end;
+      ++i;
+      continue;
     }
+
+    NameSectionSubsection type = static_cast<NameSectionSubsection>(name_type);
+    CALLBACK(OnNameSubsection, i, type, subsection_size);
 
     switch (type) {
       case NameSectionSubsection::Module:

@@ -24,6 +24,10 @@
 
 #include <map>
 
+#if defined(__GLIBC__)
+#include <malloc.h>
+#endif
+
 #if defined(COMPILER_MSVC)
 #include <BaseTsd.h>
 typedef SSIZE_T ssize_t;
@@ -87,7 +91,7 @@ static void buildCatchInfo(JITCompiler* compiler, ModuleFunction* function, std:
             catchLabel->addInfo(Label::kHasCatchInfo);
         }
 
-        tryBlocks[idx].catchBlocks.push_back(TryBlock::CatchBlock(catchLabel, it.m_stackSizeToBe, it.m_tagIndex));
+        tryBlocks[idx].catchBlocks.push_back(TryBlock::CatchBlock(catchLabel, it.m_stackSizeToBe, it.m_tagIndex, it.m_pushExnRef));
     }
 }
 
@@ -3855,6 +3859,12 @@ void Module::jitCompile(ModuleFunction** functions, size_t functionsLength, uint
     }
 
     compiler.generateCode();
+
+#if defined(__GLIBC__)
+    // The analysis above frees everything it allocated, but the freed chunks are
+    // small and scattered through the arena. malloc_trim() handle that problem.
+    malloc_trim(0);
+#endif
 }
 
 } // namespace Walrus
