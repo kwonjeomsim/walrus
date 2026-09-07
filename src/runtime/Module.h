@@ -40,6 +40,9 @@ enum JITFlagValue : uint32_t {
     JITVerbose = 1 << 1,
     JITVerboseColor = 1 << 2,
     disableRegAlloc = 1 << 3,
+    useJITHybrid = 1 << 4,
+    JITHybridVerbose = 1 << 5,
+    tierUp = 1 << 6,
 };
 
 enum class SegmentMode {
@@ -242,7 +245,18 @@ public:
         return m_catchInfo;
     }
 
+#if defined(WALRUS_PROFILER)
+    uint64_t profileTimeNs() const { return m_profileTimeNs; }
+    void addProfileTimeNs(uint64_t ns) { m_profileTimeNs += ns; }
+#endif
+
 #if defined(WALRUS_ENABLE_JIT)
+    enum class TierUpState : uint8_t {
+        Candidate,
+        Compiled,
+        Disabled,
+    };
+
     void setJITFunction(JITFunction* jitFunction)
     {
         ASSERT(m_jitFunction == nullptr);
@@ -252,6 +266,19 @@ public:
     JITFunction* jitFunction()
     {
         return m_jitFunction;
+    }
+
+    TierUpState tierUpState() const { return m_tierUpState; }
+    void setTierUpState(TierUpState state) { m_tierUpState = state; }
+    uint32_t hotnessCount() const { return m_hotnessCount; }
+
+    bool recordHotness(uint32_t step, uint32_t threshold)
+    {
+        if (m_tierUpState != TierUpState::Candidate) {
+            return false;
+        }
+        m_hotnessCount += step;
+        return m_hotnessCount >= threshold;
     }
 #endif
 
@@ -266,8 +293,13 @@ private:
     Vector<std::pair<Value, size_t>, std::allocator<std::pair<Value, size_t>>> m_constantDebugData;
 #endif
     Vector<CatchInfo, std::allocator<CatchInfo>> m_catchInfo;
+#if defined(WALRUS_PROFILER)
+    uint64_t m_profileTimeNs = 0;
+#endif
 #if defined(WALRUS_ENABLE_JIT)
     JITFunction* m_jitFunction;
+    uint32_t m_hotnessCount;
+    TierUpState m_tierUpState;
 #endif
 };
 
@@ -458,6 +490,16 @@ public:
 #if defined(WALRUS_ENABLE_JIT)
     /* Passing 0 as functionsLength compiles all functions. */
     void jitCompile(ModuleFunction** functions, size_t functionsLength, uint32_t JITFlags);
+
+    void setJITFlags(uint32_t JITFlags) { m_JITFlags = JITFlags; }
+    uint32_t jitFlags() const { return m_JITFlags; }
+    bool tierUpEnabled() const { return (m_JITFlags & JITFlagValue::tierUp) != 0; }
+    uint32_t tierUpThreshold() const { return m_tierUpThreshold; }
+
+    void tierUpCompile(ModuleFunction* function);
+
+    static const uint32_t defaultTierUpThreshold = 1000;
+    static uint32_t tierUpThresholdSetting();
 #endif
 
 private:
@@ -483,6 +525,8 @@ private:
     TagTypeVector m_tagTypes;
 #if defined(WALRUS_ENABLE_JIT)
     JITModule* m_jitModule;
+    uint32_t m_JITFlags;
+    uint32_t m_tierUpThreshold;
 #endif
 };
 

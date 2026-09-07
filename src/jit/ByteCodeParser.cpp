@@ -19,6 +19,7 @@
 #include "Walrus.h"
 
 #include "jit/Compiler.h"
+#include "jit/JITPredictor.h"
 #include "runtime/JITExec.h"
 #include "runtime/Module.h"
 
@@ -3745,6 +3746,7 @@ static void compileFunction(JITCompiler* compiler)
 
     function->setJITFunction(jitFunc);
     compiler->compileFunction(jitFunc, true);
+    JITCompiler::s_compiledFunctions++;
 }
 
 const uint8_t* VariableList::getOperandDescriptor(Instruction* instr)
@@ -3870,6 +3872,27 @@ void Module::jitCompile(ModuleFunction** functions, size_t functionsLength, uint
     // small and scattered through the arena. malloc_trim() handle that problem.
     malloc_trim(0);
 #endif
+}
+
+void Module::tierUpCompile(ModuleFunction* function)
+{
+    ASSERT(function->tierUpState() == ModuleFunction::TierUpState::Candidate);
+    ASSERT(function->jitFunction() == nullptr);
+
+    if (m_JITFlags & JITFlagValue::JITVerbose) {
+        printf("[tier-up] compiling hot function %p (hotness %u >= threshold %u)\n",
+               reinterpret_cast<void*>(function), function->hotnessCount(), m_tierUpThreshold);
+    }
+
+    // generateCode() appends to the module's existing JITModule, so compiling
+    // one function at a time stays incremental across invocations.
+    jitCompile(&function, 1, m_JITFlags);
+
+    if (function->jitFunction() != nullptr && function->jitFunction()->isCompiled()) {
+        function->setTierUpState(ModuleFunction::TierUpState::Compiled);
+    } else {
+        function->setTierUpState(ModuleFunction::TierUpState::Disabled);
+    }
 }
 
 } // namespace Walrus

@@ -4102,8 +4102,62 @@ std::pair<Optional<Module*>, std::string> WASMParser::parseBinary(Store* store, 
 
     Module* module = new Module(store, delegate.parsingResult());
 #if defined(WALRUS_ENABLE_JIT)
+    module->setJITFlags(JITFlags);
     if (JITFlags & JITFlagValue::useJIT) {
-        module->jitCompile(nullptr, 0, JITFlags);
+        if (JITFlags & JITFlagValue::tierUp) {
+            // Tier-up mode: do not compile anything up front. Functions start in
+            // the interpreter and are compiled on demand once dynamic profiling
+            // marks them as hot.
+        } else {
+            module->jitCompile(nullptr, 0, JITFlags);
+        }
+    } else if (JITFlags & JITFlagValue::useJITHybrid) {
+        std::vector<uint32_t> hybridIndices;
+        std::vector<RuntimeFuncInfo> runtimeInfo(module->numberOfFunctions());
+        
+        for (size_t i = 0; i < module->numberOfFunctions(); i++) {
+            ModuleFunction* f = module->function(i);
+            runtimeInfo[i].requiredStackSize = static_cast<int32_t>(f->requiredStackSize());
+            runtimeInfo[i].byteCodeSize = static_cast<int32_t>(f->byteCodeSize());
+        }
+        const bool ok = g_jitCompileListPath
+            ? loadJITCompileList(g_jitCompileListPath, hybridIndices)
+            : predictJITCandidates(data, len, hybridIndices, runtimeInfo);
+        if (!ok) {
+            fprintf(stderr,
+                    "warning: --jit-hybrid: predictor failed to parse %s; "
+                    "falling back to interpreter\n",
+                    filename.c_str());
+        } else {
+            const size_t totalFns = module->numberOfFunctions();
+            std::vector<ModuleFunction*> selected;
+            selected.reserve(hybridIndices.size());
+            for (uint32_t idx : hybridIndices) {
+                if (idx < totalFns) {
+                    selected.push_back(module->function(idx));
+                } else if (JITFlags & JITFlagValue::JITHybridVerbose) {
+                    fprintf(stderr,
+                            "warning: --jit-hybrid index %u out of range "
+                            "(module has %zu functions)\n",
+                            idx, totalFns);
+                }
+            }
+
+            if (JITFlags & JITFlagValue::JITHybridVerbose) {
+                printf("[jit-hybrid] JIT-compiling %zu / %zu functions (indices:",
+                       selected.size(), totalFns);
+                for (uint32_t idx : hybridIndices) {
+                    if (idx < totalFns) {
+                        printf(" %u", idx);
+                    }
+                }
+                printf(")\n");
+            }
+
+            if (!selected.empty()) {
+                module->jitCompile(selected.data(), selected.size(), JITFlags);
+            }
+        }
     }
 #endif
 

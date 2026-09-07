@@ -17,6 +17,7 @@
 #if defined(WALRUS_ENABLE_JIT)
 
 #include "Walrus.h"
+
 #include "jit/Compiler.h"
 #include "runtime/GCArray.h"
 

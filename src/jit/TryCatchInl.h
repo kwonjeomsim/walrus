@@ -72,38 +72,46 @@ InstanceConstData::InstanceConstData(std::vector<TrapBlock>& trapBlocks, std::ve
 
 void InstanceConstData::append(std::vector<TrapBlock>& trapBlocks, std::vector<Walrus::TryBlock>& tryBlocks)
 {
-    sljit_uw itemCount = trapListCountItems(trapBlocks);
-    sljit_uw endAddress = sljit_get_label_addr(trapBlocks[0].endLabel);
-    sljit_uw pos = 0;
+    // A function compiled incrementally (tier-up) may carry no trap blocks at
+    // all -- e.g. a leaf function with no calls, memory/division traps or
+    // try/catch. Such a function contributes nothing to the trap list, so skip
+    // the merge entirely. (In the ahead-of-time path the module trampoline
+    // always provides at least one trap block, so this list was never empty
+    // there.)
+    if (!trapBlocks.empty()) {
+        sljit_uw itemCount = trapListCountItems(trapBlocks);
+        sljit_uw endAddress = sljit_get_label_addr(trapBlocks[0].endLabel);
+        sljit_uw pos = 0;
 
-    ASSERT(itemCount > 0);
+        ASSERT(itemCount > 0);
 
-    while (true) {
-        if (pos >= m_trapList.size()) {
-            m_trapList.resize(m_trapList.size() + itemCount);
-            break;
-        }
+        while (true) {
+            if (pos >= m_trapList.size()) {
+                m_trapList.resize(m_trapList.size() + itemCount);
+                break;
+            }
 
-        if (endAddress < m_trapList[pos]) {
-            m_trapList.insert(m_trapList.begin() + pos, itemCount, static_cast<sljit_uw>(0));
-            break;
-        }
+            if (endAddress < m_trapList[pos]) {
+                m_trapList.insert(m_trapList.begin() + pos, itemCount, static_cast<sljit_uw>(0));
+                break;
+            }
 
-        pos += 2;
-    }
-
-    sljit_uw lastAddress = 0;
-
-    for (auto it : trapBlocks) {
-        sljit_uw endAddress = sljit_get_label_addr(it.endLabel);
-
-        ASSERT(lastAddress <= endAddress && endAddress != 0);
-
-        if (endAddress != lastAddress) {
-            m_trapList[pos] = endAddress;
-            m_trapList[pos + 1] = sljit_get_label_addr(it.u.handlerLabel);
-            lastAddress = endAddress;
             pos += 2;
+        }
+
+        sljit_uw lastAddress = 0;
+
+        for (auto it : trapBlocks) {
+            sljit_uw endAddress = sljit_get_label_addr(it.endLabel);
+
+            ASSERT(lastAddress <= endAddress && endAddress != 0);
+
+            if (endAddress != lastAddress) {
+                m_trapList[pos] = endAddress;
+                m_trapList[pos + 1] = sljit_get_label_addr(it.u.handlerLabel);
+                lastAddress = endAddress;
+                pos += 2;
+            }
         }
     }
 

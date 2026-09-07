@@ -19,6 +19,10 @@
 
 #include "runtime/Module.h"
 
+#if defined(WALRUS_ENABLE_JIT)
+#include "jit/JITPredictor.h"
+#endif
+
 namespace Walrus {
 
 class Module;
