@@ -48,6 +48,8 @@ DEFAULT_RUNNERS = []
 JIT_EXCLUDE_FILES = []
 jit = False
 jit_no_reg_alloc = False
+jit_tierup = False
+jit_hybrid = False
 web_assembly3 = False
 
 
@@ -67,7 +69,7 @@ class runner(object):
 def _run_wast_tests(engine, files, is_fail, mapdir="./", args=None):
     fails = 0
     for file in files:
-        if jit or jit_no_reg_alloc:
+        if jit or jit_no_reg_alloc or jit_tierup or jit_hybrid:
             filename = os.path.basename(file)
             if filename in JIT_EXCLUDE_FILES:
                 continue
@@ -76,6 +78,10 @@ def _run_wast_tests(engine, files, is_fail, mapdir="./", args=None):
             subprocess_args.append("--jit")
         if jit_no_reg_alloc:
             subprocess_args.append("--jit-no-reg-alloc")
+        if jit_tierup:
+            subprocess_args.append("--jit-tierup")
+        if jit_hybrid:
+            subprocess_args.append("--jit-hybrid")
         if web_assembly3:
             subprocess_args.append("--enable-web-assembly3")
         if args:
@@ -344,6 +350,10 @@ def main():
     parser.add_argument('--jit', action='store_true', help='test with JIT')
     parser.add_argument('--jit-no-reg-alloc', action='store_true',
                         help='test with JIT without register allocation')
+    parser.add_argument('--jit-tierup', action='store_true',
+                        help='test with tier-up JIT (interpret then compile hot functions)')
+    parser.add_argument('--jit-hybrid', action='store_true',
+                        help='test with hybrid JIT (decision-tree predictor selects functions to compile)')
     args = parser.parse_args()
     global jit
     jit = args.jit
@@ -351,13 +361,19 @@ def main():
     global jit_no_reg_alloc
     jit_no_reg_alloc = args.jit_no_reg_alloc
 
+    global jit_tierup
+    jit_tierup = args.jit_tierup
+
+    global jit_hybrid
+    jit_hybrid = args.jit_hybrid
+
     global qemu
     qemu = [args.qemu] if args.qemu else []
 
-    if jit and jit_no_reg_alloc:
-        parser.error('jit and jit-no-reg-alloc cannot be used together')
+    if sum([bool(jit), bool(jit_no_reg_alloc), bool(jit_tierup), bool(jit_hybrid)]) > 1:
+        parser.error('jit, jit-no-reg-alloc, jit-tierup, and jit-hybrid cannot be used together')
 
-    if jit or jit_no_reg_alloc:
+    if jit or jit_no_reg_alloc or jit_tierup or jit_hybrid:
         exclude_list_file = join(PROJECT_SOURCE_DIR, 'tools',
                                  'jit_exclude_list.txt')
         with open(exclude_list_file) as f:
@@ -376,6 +392,10 @@ def main():
             text = " with jit"
         elif jit_no_reg_alloc:
             text = " with jit without register allocation"
+        elif jit_tierup:
+            text = " with jit-tierup"
+        elif jit_hybrid:
+            text = " with jit-hybrid"
         print(COLOR_PURPLE + f'running test suite{text}: ' + suite +
               COLOR_RESET)
         try:

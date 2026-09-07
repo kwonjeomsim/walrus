@@ -838,6 +838,11 @@ public:
         m_moduleFunction = moduleFunction;
     }
 
+    static size_t s_allocatedCodeSize;
+    static size_t s_compiledFunctions;
+
+    size_t emittedCodeBytes() const;
+
     void buildBasicBlocks();
     void buildVariables(uint32_t requiredStackSize);
     void allocateRegistersSimple();

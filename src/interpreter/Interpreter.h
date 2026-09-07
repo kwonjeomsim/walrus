@@ -27,6 +27,10 @@
 #include "runtime/Tag.h"
 #include "interpreter/ByteCode.h"
 
+#if defined(WALRUS_PROFILER)
+#include "runtime/Profiler.h"
+#endif
+
 #ifdef ENABLE_GC
 #include "GCUtil.h"
 #endif /* ENABLE_GC */
@@ -115,7 +119,48 @@ private:
         StackFrame frame(functionStackBase, moduleFunction->requiredStackSize());
         ByteCodeStackOffset* resultOffsets;
 
+#if defined(WALRUS_PROFILER)
+        struct ProfileFrame {
+            ModuleFunction* fn;
+            uint64_t t0;
+            uint64_t childNs;
+            uint64_t* savedParent;
+            inline ProfileFrame(ModuleFunction* f)
+            {
+                if (LIKELY(!Profiler::enabled())) {
+                    fn = nullptr;
+                    return;
+                }
+                fn = f;
+                childNs = 0;
+                savedParent = g_profileChildNs;
+                g_profileChildNs = &childNs;
+                t0 = Profiler::nowNs();
+            }
+            inline ~ProfileFrame()
+            {
+                if (fn == nullptr) {
+                    return;
+                }
+                uint64_t inclusive = Profiler::nowNs() - t0;
+                fn->addProfileTimeNs(inclusive > childNs ? inclusive - childNs : 0);
+                g_profileChildNs = savedParent;
+                if (savedParent != nullptr) {
+                    *savedParent += inclusive;
+                }
+            }
+        } profileFrame(moduleFunction);
+#endif
+
 #if defined(WALRUS_ENABLE_JIT)
+        if (moduleFunction->jitFunction() == nullptr) {
+            Module* module = function->instance()->module();
+            if (module->tierUpEnabled()
+                && moduleFunction->recordHotness(1, module->tierUpThreshold())) {
+                module->tierUpCompile(moduleFunction);
+            }
+        }
+
         if (moduleFunction->jitFunction() != nullptr) {
             const JITFunction* jitFunc = moduleFunction->jitFunction();
             ExecutionContext context(jitFunc->instanceConstData(), newState, function->instance());

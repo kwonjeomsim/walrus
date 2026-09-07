@@ -30,6 +30,7 @@
 #include "runtime/Table.h"
 #include "runtime/Tag.h"
 #include "jit/Compiler.h"
+#include "jit/JITPredictor.h"
 #ifdef WALRUS_JITPERF
 #include "jit/PerfDump.h"
 #endif
@@ -1121,6 +1122,28 @@ JITCompiler::JITCompiler(Module* module, uint32_t JITFlags)
     }
 }
 
+// Detects whether the target CPU supports short (16-bit) atomic memory
+// accesses. This is a constant CPU property, so it is probed once on a
+// throwaway compiler that owns a valid register frame. Doing it this way keeps
+// it correct for tier-up, where functions are compiled incrementally: an
+// incremental JITCompiler does not emit the module trampoline (and therefore
+// has no active frame at the point the probe used to run inline), which made
+// the register-validity check in sljit_emit_atomic_load abort.
+static bool detectShortAtomicSupport()
+{
+    static const bool supported = []() -> bool {
+        sljit_compiler* compiler = sljit_create_compiler(nullptr);
+        if (compiler == nullptr) {
+            return false;
+        }
+        sljit_emit_enter(compiler, 0, SLJIT_ARGS3(P, P_R, P, P_R), 3, 2, 0);
+        bool result = sljit_emit_atomic_load(compiler, SLJIT_MOV_U16 | SLJIT_ATOMIC_TEST, SLJIT_R0, SLJIT_R1) != SLJIT_ERR_UNSUPPORTED;
+        sljit_free_compiler(compiler);
+        return result;
+    }();
+    return supported;
+}
+
 void JITCompiler::compileFunction(JITFunction* jitFunc, bool isExternal)
 {
     ASSERT(m_first != nullptr && m_last != nullptr);
@@ -1147,7 +1170,7 @@ void JITCompiler::compileFunction(JITFunction* jitFunc, bool isExternal)
             m_context.trapBlocksStart = 1;
         }
 
-        if (sljit_emit_atomic_load(m_compiler, SLJIT_MOV_U16 | SLJIT_ATOMIC_TEST, SLJIT_R0, SLJIT_R1) != SLJIT_ERR_UNSUPPORTED) {
+        if (detectShortAtomicSupport()) {
             m_options |= JITCompiler::kHasShortAtomic;
         }
     }
@@ -1245,7 +1268,16 @@ void JITCompiler::generateCode()
         } while (brTable != nullptr);
     }
 
+    // What the executable buffer costs is the size sljit asked the allocator
+    // for, which is this running total; the generated size only says how much
+    // of that buffer the code ended up filling.
+    const size_t allocatedCodeBytes = emittedCodeBytes();
+
     void* code = sljit_generate_code(m_compiler, 0, nullptr);
+
+    if (code != nullptr) {
+        s_allocatedCodeSize += allocatedCodeBytes;
+    }
 
 #ifdef WALRUS_JITPERF
     const bool perfEnabled = PerfDump::instance().perfEnabled();
@@ -1312,6 +1344,35 @@ void JITCompiler::generateCode()
         }
     }
 
+    if (code != nullptr && g_jitCodeDumpPath != nullptr) {
+        // Per-function machine code size, taken from the same label extents
+        // perf reporting uses. One compiler instance covers a batch of
+        // functions, so the totals alone cannot say what each one cost.
+        FILE* dumpFile = fopen(g_jitCodeDumpPath, "a");
+        if (dumpFile != nullptr) {
+            const size_t moduleFunctions = module()->numberOfFunctions();
+            for (size_t i = 0; i < m_functionList.size(); i++) {
+                size_t functionIndex = moduleFunctions;
+                for (size_t j = 0; j < moduleFunctions; j++) {
+                    if (module()->function(j)->jitFunction() == m_functionList[i].jitFunc) {
+                        functionIndex = j;
+                        break;
+                    }
+                }
+
+                sljit_uw funcStart = sljit_get_label_addr(m_functionList[i].exportEntryLabel);
+                sljit_uw funcEnd = (i + 1 < m_functionList.size())
+                    ? sljit_get_label_addr(m_functionList[i + 1].exportEntryLabel)
+                    : SLJIT_FUNC_UADDR(code) + sljit_get_generated_code_size(m_compiler);
+
+                if (functionIndex < moduleFunctions && funcEnd >= funcStart) {
+                    fprintf(dumpFile, "%zu %zu\n", functionIndex, static_cast<size_t>(funcEnd - funcStart));
+                }
+            }
+            fclose(dumpFile);
+        }
+    }
+
 #ifdef WALRUS_JITPERF
     if (perfEnabled) {
 #if !defined(NDEBUG)
@@ -1332,9 +1393,13 @@ void JITCompiler::generateCode()
             size_t size = module()->numberOfFunctions();
             int functionIndex = 0;
 
-            for (size_t i = 0; i < size; i++) {
-                if (module()->function(i)->jitFunction() == m_functionList[i].jitFunc) {
-                    functionIndex = static_cast<int>(i);
+            // The inner index used to shadow the outer one, so this walked
+            // m_functionList with a module function index. Compiling every
+            // function at once hid it, because the two ranges then matched;
+            // tier-up compiles one at a time and read past the end.
+            for (size_t j = 0; j < size; j++) {
+                if (module()->function(j)->jitFunction() == m_functionList[i].jitFunc) {
+                    functionIndex = static_cast<int>(j);
                     break;
                 }
             }
@@ -1368,6 +1433,27 @@ void JITCompiler::generateCode()
     }
 #endif
     sljit_free_compiler(m_compiler);
+}
+
+size_t JITCompiler::s_allocatedCodeSize = 0;
+size_t JITCompiler::s_compiledFunctions = 0;
+
+size_t JITCompiler::emittedCodeBytes() const
+{
+    if (m_compiler == nullptr) {
+        return 0;
+    }
+    // sljit's running total counts x86 code in bytes and every other target in
+    // instruction slots, so the slot width is what turns it into a byte count.
+    // It is the buffer size generateCode() will ask for, so it sits at or just
+    // above the code that ends up being emitted.
+#if (defined SLJIT_CONFIG_X86 && SLJIT_CONFIG_X86)
+    return m_compiler->size;
+#elif ((defined SLJIT_CONFIG_ARM_THUMB2 && SLJIT_CONFIG_ARM_THUMB2) || (defined SLJIT_CONFIG_RISCV && SLJIT_CONFIG_RISCV))
+    return m_compiler->size * sizeof(sljit_u16);
+#else
+    return m_compiler->size * sizeof(sljit_ins);
+#endif
 }
 
 void JITCompiler::clear()

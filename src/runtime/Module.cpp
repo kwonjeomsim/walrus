@@ -34,12 +34,32 @@ namespace Walrus {
 
 DEFINE_GLOBAL_TYPE_INFO(moduleTypeInfo, ModuleKind);
 
+#if defined(WALRUS_ENABLE_JIT)
+uint32_t Module::tierUpThresholdSetting()
+{
+    static uint32_t cached = []() -> uint32_t {
+        const char* env = std::getenv("WALRUS_JIT_TIERUP_THRESHOLD");
+        if (env != nullptr) {
+            char* end = nullptr;
+            unsigned long value = std::strtoul(env, &end, 10);
+            if (end != env && value > 0 && value <= UINT32_MAX) {
+                return static_cast<uint32_t>(value);
+            }
+        }
+        return Module::defaultTierUpThreshold;
+    }();
+    return cached;
+}
+#endif
+
 ModuleFunction::ModuleFunction(FunctionType* functionType)
     : m_hasTryCatch(false)
     , m_requiredStackSize(std::max(functionType->paramStackSize(), functionType->resultStackSize()))
     , m_functionType(functionType)
 #if defined(WALRUS_ENABLE_JIT)
     , m_jitFunction(nullptr)
+    , m_hotnessCount(0)
+    , m_tierUpState(TierUpState::Candidate)
 #endif
 {
 }
@@ -62,6 +82,8 @@ Module::Module(Store* store, WASMParsingResult& result)
     , m_tagTypes(std::move(result.m_tagTypes))
 #if defined(WALRUS_ENABLE_JIT)
     , m_jitModule(nullptr)
+    , m_JITFlags(0)
+    , m_tierUpThreshold(tierUpThresholdSetting())
 #endif
 {
     store->appendModule(this);

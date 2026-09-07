@@ -22,6 +22,13 @@
 #include "runtime/Trap.h"
 #include "parser/WASMParser.h"
 #include "parser/WASMComponentParser.h"
+#if defined(WALRUS_ENABLE_JIT)
+#include "jit/JITPredictor.h"
+#include "jit/Compiler.h"
+#endif
+#if defined(WALRUS_PROFILER)
+#include "runtime/Profiler.h"
+#endif
 
 #include "wabt/wast-lexer.h"
 #include "wabt/wast-parser.h"
@@ -52,7 +59,14 @@ struct ParseOptions {
 };
 
 static uint32_t s_JITFlags = 0;
+#if defined(WALRUS_ENABLE_JIT)
+static bool s_jitStats = false;
+#endif
 static uint32_t s_FeatureFlags = 0;
+static std::string s_jitFeatureDump;
+#if defined(WALRUS_PROFILER)
+static std::string s_profileOutput;
+#endif
 
 using namespace Walrus;
 
@@ -376,6 +390,11 @@ static Trap::TrapResult executeWASM(Store* store, const std::string& filename, c
         return tr;
     }
 
+#if defined(WALRUS_PROFILER)
+    if (Profiler::enabled()) {
+        Profiler::instance().registerModule(parseResult.first.value(), filename);
+    }
+#endif
     return executeModule(store, parseResult.first.value(), registeredInstanceMap);
 }
 
@@ -1188,6 +1207,11 @@ static void runExports(Store* store, const std::string& filename, const std::vec
     }
 
     auto module = parseResult.first;
+#if defined(WALRUS_PROFILER)
+    if (Profiler::enabled()) {
+        Profiler::instance().registerModule(module.value(), filename);
+    }
+#endif
     const auto& importTypes = module->imports();
     ExternVector importValues;
     importValues.reserve(importTypes.size());
@@ -1278,6 +1302,20 @@ static void parseArguments(int argc, const char* argv[], ParseOptions& options)
 {
     for (int i = 1; i < argc; i++) {
         if (strlen(argv[i]) >= 2 && argv[i][0] == '-') { // parse command line option
+#if defined(WALRUS_ENABLE_JIT)
+            if (argv[i][1] == 'O' && argv[i][2] != '\0' && argv[i][3] == '\0') {
+                const int level = argv[i][2] - '0';
+                if (level < 0 || level > Walrus::jitOptLevelCount()) {
+                    fprintf(stderr, "error: -O must be 0..%d\n",
+                            Walrus::jitOptLevelCount());
+                    exit(1);
+                }
+                s_JITFlags |= JITFlagValue::useJITHybrid;
+                // -O0 은 컴파일 없음, -O1..-On 은 단계 트리 0..n-1.
+                Walrus::g_jitOptLevel = (level == 0) ? Walrus::kJITOptLevelOff : level - 1;
+                continue;
+            }
+#endif
             if (argv[i][1] == '-') { // `--option` case
                 if (strcmp(argv[i], "--run-export") == 0) {
                     if (i + 1 == argc || argv[i + 1][0] == '-') {
@@ -1294,6 +1332,9 @@ static void parseArguments(int argc, const char* argv[], ParseOptions& options)
                 } else if (strcmp(argv[i], "--jit") == 0) {
                     s_JITFlags |= JITFlagValue::useJIT;
                     continue;
+                } else if (strcmp(argv[i], "--jit-tierup") == 0) {
+                    s_JITFlags |= JITFlagValue::useJIT | JITFlagValue::tierUp;
+                    continue;
                 } else if (strcmp(argv[i], "--jit-verbose") == 0) {
                     s_JITFlags |= JITFlagValue::JITVerbose;
                     continue;
@@ -1302,6 +1343,45 @@ static void parseArguments(int argc, const char* argv[], ParseOptions& options)
                     continue;
                 } else if (strcmp(argv[i], "--jit-no-reg-alloc") == 0) {
                     s_JITFlags |= JITFlagValue::disableRegAlloc;
+                    continue;
+                } else if (strcmp(argv[i], "--jit-stats") == 0) {
+                    s_jitStats = true;
+                    continue;
+                } else if (strncmp(argv[i], "--jit-code-dump=", 16) == 0) {
+                    Walrus::g_jitCodeDumpPath = argv[i] + 16;
+                    continue;
+                } else if (strcmp(argv[i], "--jit-hybrid") == 0) {
+                    s_JITFlags |= JITFlagValue::useJITHybrid;
+                    continue;
+                } else if (strcmp(argv[i], "--jit-hybrid-verbose") == 0) {
+                    s_JITFlags |= JITFlagValue::useJITHybrid | JITFlagValue::JITHybridVerbose;
+                    continue;
+                } else if (strcmp(argv[i], "--jit-compile-list") == 0) {
+                    if (i + 1 == argc || argv[i + 1][0] == '-') {
+                        fprintf(stderr, "error: --jit-compile-list requires a file argument\n");
+                        exit(1);
+                    }
+                    ++i;
+                    s_JITFlags |= JITFlagValue::useJITHybrid;
+                    Walrus::g_jitCompileListPath = argv[i];
+                    continue;
+                } else if (strcmp(argv[i], "--dump-jit-features") == 0) {
+                    if (i + 1 == argc || argv[i + 1][0] == '-') {
+                        fprintf(stderr, "error: --dump-jit-features requires a file argument\n");
+                        exit(1);
+                    }
+                    ++i;
+                    s_jitFeatureDump = argv[i];
+                    continue;
+#endif
+#if defined(WALRUS_PROFILER)
+                } else if (strcmp(argv[i], "--profile-output") == 0) {
+                    if (i + 1 == argc || argv[i + 1][0] == '-') {
+                        fprintf(stderr, "error: --profile-output requires a file argument\n");
+                        exit(1);
+                    }
+                    ++i;
+                    s_profileOutput = argv[i];
                     continue;
 #endif
                 } else if (strcmp(argv[i], "--env") == 0) {
@@ -1342,9 +1422,21 @@ static void parseArguments(int argc, const char* argv[], ParseOptions& options)
                     fprintf(stdout, "\t--help\n\t\tShow this message then exit.\n\n");
                     fprintf(stdout, "\t--enable-web-assembly3\n\t\tEnable support for web assembly3 features.\n\n");
 #if defined(WALRUS_ENABLE_JIT)
-                    fprintf(stdout, "\t--jit\n\t\tEnable just-in-time interpretation.\n\n");
+                    fprintf(stdout, "\t--jit\n\t\tEnable just-in-time interpretation (compiles every function ahead of time).\n\n");
+                    fprintf(stdout, "\t--jit-tierup\n\t\tEnable tier-up JIT: run in the interpreter and compile only hot functions\n\t\tselected by dynamic profiling. Tune the hotness threshold with the\n\t\tWALRUS_JIT_TIERUP_THRESHOLD environment variable.\n\n");
                     fprintf(stdout, "\t--jit-verbose\n\t\tEnable verbose output for just-in-time interpretation.\n\n");
                     fprintf(stdout, "\t--jit-verbose-color\n\t\tEnable colored verbose output for just-in-time interpretation.\n\n");
+                    fprintf(stdout, "\t--jit-hybrid\n\t\tHybrid JIT/interpreter mode: run an embedded decision-tree predictor\n\t\tover the input wasm and JIT-compile only the predicted hot functions,\n\t\tinterpreting the rest. The model is baked in at build time from\n\t\tsrc/jit/JITModelData.h (generated by tools/jit-model/export_model.py).\n\n");
+                    fprintf(stdout, "\t--jit-hybrid-verbose\n\t\tLike --jit-hybrid, and print which function indices are selected for JIT.\n\n");
+                    fprintf(stdout, "\t--jit-stats\n\t\tOn exit, report the machine code the JIT emitted and how many\n\t\tfunctions it compiled. Works in every mode, so tier-up and lazy\n\t\tcompilation are counted as they happen.\n\n");
+                    fprintf(stdout, "\t--jit-code-dump=<FILE>\n\t\tAppend \"<function index> <machine code bytes>\" to FILE for every\n\t\tfunction the JIT compiles, in any mode.\n\n");
+                    fprintf(stdout, "\t--jit-compile-list <file>\n\t\tLike --jit-hybrid, but compile exactly the function indices listed\n\t\tin <file> (whitespace-separated) instead of asking the predictor.\n\t\tUsed to measure oracle/ablation configurations.\n\n");
+                    fprintf(stdout, "\t-O<n>\n\t\tJIT 최적화 단계 (0..%d). 단계마다 학습된 결정 트리가\n\t\t하나씩 있고, 그 트리가 hot 이라 판정한 함수만 컴파일한다.\n\t\t번호가 작을수록 적게 컴파일해 메모리를 아끼고, -O0 은\n\t\t아무것도 컴파일하지 않는다.\n\n",
+                            Walrus::jitOptLevelCount());
+                    fprintf(stdout, "\t--dump-jit-features <file>\n\t\tWrite the --jit-hybrid predictor's per-function feature table to <file>\n\t\tas TSV and exit without running the module. Used by\n\t\ttools/jit-model to build training data from the same extractor\n\t\tthe runtime uses.\n\n");
+#endif
+#if defined(WALRUS_PROFILER)
+                    fprintf(stdout, "\t--profile-output <FILE>\n\t\tRun in the interpreter and write a per-function self-time profile\n\t\tto FILE at exit. Used to build training data for the JIT-hybrid\n\t\tpredictor; see tools/jit-model/.\n\n");
 #endif
                     fprintf(stdout, "\t--mapdirs <HOST_DIR> <VIRTUAL_DIR>\n\t\tMap real directories to virtual ones for WASI functions to use.\n\t\tExample: ./walrus test.wasm --mapdirs this/real/directory/ this/virtual/directory\n\n");
                     fprintf(stdout, "\t--env\n\t\tShare host environment to walrus WASI.\n\n");
@@ -1396,6 +1488,25 @@ int main(int argc, const char* argv[])
 
     parseArguments(argc, argv, options);
 
+#if defined(WALRUS_PROFILER)
+    if (!s_profileOutput.empty()) {
+        Profiler::instance().enable(s_profileOutput);
+        atexit([]() { Profiler::instance().dump(); });
+    }
+#endif
+
+#if defined(WALRUS_ENABLE_JIT)
+    if (s_jitStats) {
+        // Registered before the module is built so that tier-up and lazy
+        // compilation, which keep compiling while the program runs, are still
+        // counted when the program exits through proc_exit.
+        atexit([]() {
+            fprintf(stderr, "[jit-stats] code=%zu functions=%zu\n",
+                    JITCompiler::s_allocatedCodeSize, JITCompiler::s_compiledFunctions);
+        });
+    }
+#endif
+
 #ifdef ENABLE_WASI
     // initialize WASI
     uvwasi_t uvwasi;
@@ -1446,6 +1557,30 @@ int main(int argc, const char* argv[])
                 fclose(fp);
             }
             if (endsWith(filePath, "wasm")) {
+#if defined(WALRUS_ENABLE_JIT)
+                if (!s_jitFeatureDump.empty()) {
+                    // Parse first so the dump carries the same Walrus-side
+                    // values the runtime predictor sees.
+                    std::vector<Walrus::RuntimeFuncInfo> runtimeInfo;
+                    auto pr = Walrus::WASMParser::parseBinary(
+                        store, filePath.data(), buf.data(), buf.size(), 0, s_FeatureFlags);
+                    if (pr.first) {
+                        Walrus::Module* m = pr.first.value();
+                        runtimeInfo.resize(m->numberOfFunctions());
+                        for (size_t i = 0; i < m->numberOfFunctions(); i++) {
+                            Walrus::ModuleFunction* f = m->function(i);
+                            runtimeInfo[i].requiredStackSize = static_cast<int32_t>(f->requiredStackSize());
+                            runtimeInfo[i].byteCodeSize = static_cast<int32_t>(f->byteCodeSize());
+                        }
+                    }
+                    if (!Walrus::dumpJITFeatures(buf.data(), buf.size(),
+                                                 s_jitFeatureDump.data(), runtimeInfo)) {
+                        fprintf(stderr, "error: --dump-jit-features failed for %s\n", filePath.data());
+                        result = -1;
+                    }
+                    continue;
+                }
+#endif
                 if (!options.exportToRun.empty()) {
                     runExports(store, filePath, buf, options.exportToRun);
                 } else if (wabt::ReadBinaryIsComponent(buf.data(), buf.size())) {
@@ -1472,6 +1607,12 @@ int main(int argc, const char* argv[])
             break;
         }
     }
+
+#if defined(WALRUS_PROFILER)
+    if (Profiler::enabled()) {
+        Profiler::instance().dump();
+    }
+#endif
 
 #ifdef ENABLE_WASI
     uvwasi_destroy(&uvwasi);

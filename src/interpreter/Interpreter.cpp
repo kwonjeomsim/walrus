@@ -491,6 +491,30 @@ ByteCodeStackOffset* Interpreter::interpret(ExecutionState& state,
     Memory** memories = reinterpret_cast<Memory**>(reinterpret_cast<uintptr_t>(instance) + Instance::alignedSize());
     uint8_t* bp = frame.bp();
 
+#if defined(WALRUS_ENABLE_JIT)
+    ModuleFunction* tierUpFunction = nullptr;
+    uint32_t tierUpThreshold = 0;
+    if (instance != nullptr && instance->module()->tierUpEnabled() && state.currentFunction()) {
+        ModuleFunction* mf = state.currentFunction()->asDefinedFunction()->moduleFunction();
+        if (mf->jitFunction() == nullptr && mf->tierUpState() == ModuleFunction::TierUpState::Candidate) {
+            tierUpFunction = mf;
+            tierUpThreshold = instance->module()->tierUpThreshold();
+        }
+    }
+
+#define TIERUP_COUNT_BACKEDGE(jumpOffset)                                     \
+    if (tierUpFunction != nullptr && (jumpOffset) < 0) {                      \
+        if (tierUpFunction->recordHotness(1, tierUpThreshold)) {              \
+            instance->module()->tierUpCompile(tierUpFunction);                \
+            /* Compiled: the current frame keeps interpreting (no on-stack    \
+               replacement); later calls use the JIT code. Stop profiling. */ \
+            tierUpFunction = nullptr;                                         \
+        }                                                                     \
+    }
+#else
+#define TIERUP_COUNT_BACKEDGE(jumpOffset)
+#endif
+
 #define ADD_PROGRAM_COUNTER(codeName) programCounter += sizeof(codeName);
 
 #define BINARY_OPERATION(name, op, paramType, returnType)                   \
@@ -1512,6 +1536,7 @@ NextInstruction:
     DEFINE_OPCODE(Jump)
     {
         Jump* code = (Jump*)programCounter;
+        TIERUP_COUNT_BACKEDGE(code->offset());
         programCounter += code->offset();
         NEXT_INSTRUCTION();
     }
@@ -1520,6 +1545,7 @@ NextInstruction:
     {
         JumpIfTrue* code = (JumpIfTrue*)programCounter;
         if (readValue<int32_t>(bp, code->srcOffset())) {
+            TIERUP_COUNT_BACKEDGE(code->offset());
             programCounter += code->offset();
         } else {
             ADD_PROGRAM_COUNTER(JumpIfTrue);
@@ -1533,6 +1559,7 @@ NextInstruction:
         if (readValue<int32_t>(bp, code->srcOffset())) {
             ADD_PROGRAM_COUNTER(JumpIfFalse);
         } else {
+            TIERUP_COUNT_BACKEDGE(code->offset());
             programCounter += code->offset();
         }
         NEXT_INSTRUCTION();
