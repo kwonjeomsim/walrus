@@ -4113,16 +4113,9 @@ std::pair<Optional<Module*>, std::string> WASMParser::parseBinary(Store* store, 
         }
     } else if (JITFlags & JITFlagValue::useJITHybrid) {
         std::vector<uint32_t> hybridIndices;
-        std::vector<RuntimeFuncInfo> runtimeInfo(module->numberOfFunctions());
-        
-        for (size_t i = 0; i < module->numberOfFunctions(); i++) {
-            ModuleFunction* f = module->function(i);
-            runtimeInfo[i].requiredStackSize = static_cast<int32_t>(f->requiredStackSize());
-            runtimeInfo[i].byteCodeSize = static_cast<int32_t>(f->byteCodeSize());
-        }
         const bool ok = g_jitCompileListPath
             ? loadJITCompileList(g_jitCompileListPath, hybridIndices)
-            : predictJITCandidates(data, len, hybridIndices, runtimeInfo);
+            : predictJITCandidates(data, len, hybridIndices);
         if (!ok) {
             fprintf(stderr,
                     "warning: --jit-hybrid: predictor failed to parse %s; "

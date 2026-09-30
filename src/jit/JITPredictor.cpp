@@ -27,6 +27,7 @@
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
+#include <ctime>
 #include <queue>
 #include <unordered_map>
 #include <unordered_set>
@@ -39,9 +40,11 @@ namespace {
 // tools/jit-model/jit_decision_tree.py exactly.
 struct FuncFeature {
     int32_t index = 0;
-    int32_t call_frequency = 0;
+    // Feeds call_site_work; not a feature of its own since the product carries
+    // the same information with the function's size folded in.
+    int32_t call_site_count = 0;
     int32_t body_size = 0;
-    int32_t call_freq_x_body = 0;
+    int32_t call_site_work = 0;
     int32_t local_count = 0;
     int32_t call_indirect_count = 0;
     int32_t call_graph_depth = -1;
@@ -51,48 +54,41 @@ struct FuncFeature {
     int32_t caller_count = 0;
     int32_t is_leaf_function = 1;
     int32_t max_own_loop_depth = 0;
-    int32_t log2_static_calls = 0;
-    int32_t est_exec_log2 = 0;
-    int32_t est_exec_x_body_log2 = 0;
+    int32_t exec_count_sweep_log2 = 0;
+    int32_t exec_work_rounds_log2 = 0;
     int32_t indirect_caller_count = 0;
     int32_t max_indirect_caller_loop_depth = 0;
-    int32_t required_stack_size = 0;
-    int32_t walrus_bytecode_size = 0;
 
     int32_t feature(int idx) const
     {
         switch (idx) {
         case 0:
-            return call_frequency;
+            return call_site_work;
         case 1:
-            return call_freq_x_body;
-        case 2:
             return local_count;
-        case 3:
+        case 2:
             return call_indirect_count;
-        case 4:
+        case 3:
             return call_graph_depth;
-        case 5:
+        case 4:
             return branch_count;
-        case 6:
+        case 5:
             return caller_in_loop_count;
-        case 7:
+        case 6:
             return max_caller_loop_depth;
-        case 8:
+        case 7:
             return caller_count;
-        case 9:
+        case 8:
             return is_leaf_function;
-        case 10:
+        case 9:
             return max_own_loop_depth;
+        case 10:
+            return exec_count_sweep_log2;
         case 11:
-            return log2_static_calls;
+            return exec_work_rounds_log2;
         case 12:
-            return est_exec_log2;
-        case 13:
-            return est_exec_x_body_log2;
-        case 14:
             return indirect_caller_count;
-        case 15:
+        case 13:
             return max_indirect_caller_loop_depth;
         default:
             return 0;
@@ -101,8 +97,7 @@ struct FuncFeature {
 };
 
 constexpr const char* kFeatureNames[] = {
-    "call_frequency",
-    "call_freq_x_body",
+    "call_site_work",
     "local_count",
     "call_indirect_count",
     "call_graph_depth",
@@ -112,16 +107,21 @@ constexpr const char* kFeatureNames[] = {
     "caller_count",
     "is_leaf_function",
     "max_own_loop_depth",
-    "log2_static_calls",
-    "est_exec_log2",
-    "est_exec_x_body_log2",
+    "exec_count_sweep_log2",
+    "exec_work_rounds_log2",
     "indirect_caller_count",
     "max_indirect_caller_loop_depth",
 };
 constexpr int kFeatureNameCount = sizeof(kFeatureNames) / sizeof(kFeatureNames[0]);
 
-// Every loop is assumed to run kDefaultTrip times, so log2_static_calls
+// Every loop is assumed to run kDefaultTrip times, so exec_count_sweep_log2
 // measures call-site loop-nest depth rather than real trip counts.
+// Two estimates of how often a function runs. exec_count_sweep_log2 makes one
+// pass in call-graph-depth order; exec_work_rounds_log2 iterates the
+// propagation so cycles compound, then multiplies by the function's opcode
+// count. An unmultiplied _rounds counterpart existed and was dropped: it ranked
+// functions almost identically to _sweep (rank correlation 0.972) and removing
+// it changed nothing we could measure.
 constexpr int64_t kDefaultTrip = 10;
 
 // Loop weight compounds as trip^depth, so a call seven loops deep is credited
@@ -146,7 +146,7 @@ static int32_t maxLoopWeightDepth()
     }();
     return v;
 }
-// est_exec_log2: propagation rounds and the fixed-point scale of its log.
+// exec_work_rounds_log2: propagation rounds and the fixed-point scale of its log.
 constexpr size_t kEstRounds = 24;
 constexpr double kMaxEst = 1e18;
 constexpr double kLog2Scale = 16.0;
@@ -385,8 +385,9 @@ public:
         return wabt::Result::Ok;
     }
 
-    // This function records Features:
-    // call_frequency, caller_count, caller_in_loop_count, max_caller_loop_depth, call_graph_depth, log2_static_calls
+    // Everything that needs the whole call graph: call_site_count, caller_count,
+    // caller_in_loop_count, max_caller_loop_depth, call_graph_depth, the two
+    // exec_count_* estimates and the call_site_work / exec_work_* products.
     void recordRestFeatures()
     {
         const size_t N = m_funcs.size();
@@ -397,7 +398,7 @@ public:
         std::vector<std::unordered_set<uint32_t>> distinctCallers(N);
         for (const auto& s : m_callSites) {
             if (s.callee < N) {
-                m_funcs[s.callee].call_frequency++;
+                m_funcs[s.callee].call_site_count++;
                 distinctCallers[s.callee].insert(s.caller);
                 if (s.loopDepth > 0) {
                     m_funcs[s.callee].caller_in_loop_count++;
@@ -413,13 +414,13 @@ public:
         }
 
         setCallGraphDepths(N);
-        setStaticCallCounts(N);
-        setEstExecCounts(N);
+        setExecCountSweep(N);
+        setExecCountRounds(N);
         std::unordered_map<uint32_t, std::vector<uint32_t>>().swap(m_adj);
         std::vector<CallSite>().swap(m_callSites);
         std::vector<IndirectSite>().swap(m_indirectSites);
         for (auto& f : m_funcs) {
-            f.call_freq_x_body = f.call_frequency * f.body_size;
+            f.call_site_work = f.call_site_count * f.body_size;
         }
     }
 
@@ -493,7 +494,7 @@ private:
         }
     }
 
-    void setStaticCallCounts(size_t N)
+    void setExecCountSweep(size_t N)
     {
         std::vector<int64_t> calls(N, 0);
         std::vector<uint32_t> order(N);
@@ -528,7 +529,7 @@ private:
             }
         }
         for (size_t i = 0; i < N; ++i) {
-            m_funcs[i].log2_static_calls = floorLog2(calls[i]);
+            m_funcs[i].exec_count_sweep_log2 = floorLog2(calls[i]);
         }
     }
 
@@ -537,7 +538,7 @@ private:
     // that reaches it. Crude next to an SCC condensation, but the compounding
     // it does around cycles turned out to be a useful "recursion is hot"
     // signal, and the clamp keeps it finite.
-    void setEstExecCounts(size_t N)
+    void setExecCountRounds(size_t N)
     {
         std::vector<double> est(N, 0.0);
         std::vector<double> next(N, 0.0);
@@ -563,8 +564,7 @@ private:
             est.swap(next);
         }
         for (size_t i = 0; i < N; ++i) {
-            m_funcs[i].est_exec_log2 = fixedLog2(est[i]);
-            m_funcs[i].est_exec_x_body_log2 =
+            m_funcs[i].exec_work_rounds_log2 =
                 fixedLog2(est[i] * static_cast<double>(m_funcs[i].body_size));
         }
     }
@@ -626,8 +626,6 @@ private:
     int32_t m_maxOwnLoopDepth = 0;
 };
 
-// 어느 단계의 트리를 탈지 고른다. -O0 이면 -1 을 돌려 아무것도 고르지 않게 하고,
-// -O 를 아예 주지 않았으면 가운데 단계를 쓴다.
 static int activeLevel()
 {
     if (g_jitOptLevel == kJITOptLevelOff) {
@@ -659,10 +657,6 @@ int evaluateLeaf(const FuncFeature& f)
     return level < 0 ? -1 : leafOfLevel(f, level);
 }
 
-// 단계 n 은 1..n 단계의 판정을 합집합으로 묶는다. 단계마다 따로 학습한 트리라
-// 포함 관계가 저절로 보장되지 않아서, 높은 단계가 낮은 단계보다 적게 컴파일하는
-// 역전이 실제로 일어났다(zip-test 에서 -O3 이 시간의 99.6% 를 쓰는 함수를 놓쳐
-// -O2 의 1.59초 대신 33.08초가 나왔다).
 int evaluateTree(const FuncFeature& f)
 {
     using namespace JITPredictorModel;
@@ -715,33 +709,32 @@ bool collect(const uint8_t* wasm, size_t size, FeatureCollector& reader)
     return true;
 }
 
-static void mergeRuntimeInfo(FeatureCollector& reader,
-                             const std::vector<RuntimeFuncInfo>& runtime)
-{
-    if (runtime.empty()) {
-        return;
-    }
-    for (auto& f : reader.mutableFuncs()) {
-        const size_t idx = static_cast<size_t>(f.index);
-        if (idx < runtime.size()) {
-            f.required_stack_size = runtime[idx].requiredStackSize;
-            f.walrus_bytecode_size = runtime[idx].byteCodeSize;
-        }
-    }
-}
-
 } // namespace
 
 bool predictJITCandidates(const uint8_t* wasm, size_t size,
-                          std::vector<uint32_t>& outIndices,
-                          const std::vector<RuntimeFuncInfo>& runtime)
+                          std::vector<uint32_t>& outIndices)
 {
+    struct timespec t0, t1;
+    clock_gettime(CLOCK_MONOTONIC, &t0);
+
     outIndices.clear();
     FeatureCollector reader;
+    // Repeating costs nothing in normal runs (g_jitPredictRepeats is 1) and lets
+    // the measurement harness lift a millisecond-scale cost off the clock floor.
+    for (int rep = 1; rep < g_jitPredictRepeats; ++rep) {
+        FeatureCollector warm;
+        if (!collect(wasm, size, warm)) {
+            return false;
+        }
+        for (const auto& f : warm.funcs()) {
+            if (!warm.isImport(static_cast<uint32_t>(f.index)) && f.body_size != 0) {
+                evaluateTree(f);
+            }
+        }
+    }
     if (!collect(wasm, size, reader)) {
         return false;
     }
-    mergeRuntimeInfo(reader, runtime);
 
     for (const auto& f : reader.funcs()) {
         const uint32_t idx = static_cast<uint32_t>(f.index);
@@ -755,6 +748,10 @@ bool predictJITCandidates(const uint8_t* wasm, size_t size,
             outIndices.push_back(idx);
         }
     }
+
+    clock_gettime(CLOCK_MONOTONIC, &t1);
+    g_jitPredictTimeNs = static_cast<uint64_t>(t1.tv_sec - t0.tv_sec) * 1000000000ull
+        + static_cast<uint64_t>(t1.tv_nsec) - static_cast<uint64_t>(t0.tv_nsec);
     return true;
 }
 
@@ -767,6 +764,8 @@ int jitOptLevelCount()
 }
 
 const char* g_jitCodeDumpPath = nullptr;
+uint64_t g_jitPredictTimeNs = 0;
+int g_jitPredictRepeats = 1;
 
 bool loadJITCompileList(const char* path, std::vector<uint32_t>& outIndices)
 {
@@ -784,14 +783,12 @@ bool loadJITCompileList(const char* path, std::vector<uint32_t>& outIndices)
 }
 
 
-bool dumpJITFeatures(const uint8_t* wasm, size_t size, const char* path,
-                     const std::vector<RuntimeFuncInfo>& runtime)
+bool dumpJITFeatures(const uint8_t* wasm, size_t size, const char* path)
 {
     FeatureCollector reader;
     if (!collect(wasm, size, reader)) {
         return false;
     }
-    mergeRuntimeInfo(reader, runtime);
     return writeFeatures(reader.funcs(), path);
 }
 

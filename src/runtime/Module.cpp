@@ -50,6 +50,29 @@ uint32_t Module::tierUpThresholdSetting()
     }();
     return cached;
 }
+
+uint32_t Module::tierUpCostFactorSetting()
+{
+    static uint32_t cached = []() -> uint32_t {
+        const char* env = std::getenv("WALRUS_JIT_TIERUP_COST");
+        if (env != nullptr) {
+            char* end = nullptr;
+            unsigned long value = std::strtoul(env, &end, 10);
+            if (end != env && value <= UINT32_MAX) {
+                return static_cast<uint32_t>(value);
+            }
+        }
+        // Asking for a specific uniform threshold means asking for exactly that
+        // count, so cost scaling steps aside. This is how lazy compilation
+        // (threshold 1) and a counters-only run (threshold beyond reach) are
+        // expressed.
+        if (std::getenv("WALRUS_JIT_TIERUP_THRESHOLD") != nullptr) {
+            return 0;
+        }
+        return Module::defaultTierUpCostFactor;
+    }();
+    return cached;
+}
 #endif
 
 ModuleFunction::ModuleFunction(FunctionType* functionType)
@@ -84,6 +107,7 @@ Module::Module(Store* store, WASMParsingResult& result)
     , m_jitModule(nullptr)
     , m_JITFlags(0)
     , m_tierUpThreshold(tierUpThresholdSetting())
+    , m_tierUpCostFactor(tierUpCostFactorSetting())
 #endif
 {
     store->appendModule(this);
