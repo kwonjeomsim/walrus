@@ -496,10 +496,31 @@ public:
     bool tierUpEnabled() const { return (m_JITFlags & JITFlagValue::tierUp) != 0; }
     uint32_t tierUpThreshold() const { return m_tierUpThreshold; }
 
+    // A function is compiled once its counter reaches K per byte of its own
+    // bytecode, so a large function has to be correspondingly hotter to earn
+    // the machine code it will occupy. K is WALRUS_JIT_TIERUP_COST and defaults
+    // to defaultTierUpCostFactor; K = 0 falls back to one uniform threshold for
+    // every function, which is what an explicit WALRUS_JIT_TIERUP_THRESHOLD
+    // selects.
+    uint32_t tierUpThresholdFor(const ModuleFunction* func) const
+    {
+        if (m_tierUpCostFactor == 0) {
+            return m_tierUpThreshold;
+        }
+        const uint64_t scaled = static_cast<uint64_t>(m_tierUpCostFactor)
+            * static_cast<uint64_t>(func->byteCodeSize());
+        if (scaled < 1) {
+            return 1;
+        }
+        return scaled > UINT32_MAX ? UINT32_MAX : static_cast<uint32_t>(scaled);
+    }
+
     void tierUpCompile(ModuleFunction* function);
 
     static const uint32_t defaultTierUpThreshold = 1000;
+    static const uint32_t defaultTierUpCostFactor = 1;
     static uint32_t tierUpThresholdSetting();
+    static uint32_t tierUpCostFactorSetting();
 #endif
 
 private:
@@ -527,6 +548,7 @@ private:
     JITModule* m_jitModule;
     uint32_t m_JITFlags;
     uint32_t m_tierUpThreshold;
+    uint32_t m_tierUpCostFactor;
 #endif
 };
 

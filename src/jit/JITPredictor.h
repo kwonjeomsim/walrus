@@ -24,29 +24,24 @@
 
 namespace Walrus {
 
-// What Walrus works out while lowering a module and the wasm bytes do not
-// carry: the operand-stack slots a function needs, and the size of the bytecode
-// the JIT will actually consume. Indexed by function index; an empty vector
-// means the caller had no module to read them from.
-struct RuntimeFuncInfo {
-    int32_t requiredStackSize = 0;
-    int32_t byteCodeSize = 0;
-};
+// Every feature is read out of the module bytes, so both entry points take the
+// wasm binary and nothing else.
+bool predictJITCandidates(const uint8_t* wasm, size_t size, std::vector<uint32_t>& outIndices);
 
-bool predictJITCandidates(const uint8_t* wasm, size_t size, std::vector<uint32_t>& outIndices,
-                          const std::vector<RuntimeFuncInfo>& runtime = {});
-
-bool dumpJITFeatures(const uint8_t* wasm, size_t size, const char* path,
-                     const std::vector<RuntimeFuncInfo>& runtime = {});
+bool dumpJITFeatures(const uint8_t* wasm, size_t size, const char* path);
 
 extern const char* g_jitCompileListPath;
 extern int g_jitOptLevel;
 constexpr int kJITOptLevelOff = -2;
 int jitOptLevelCount();
-// When set, every compiled function appends "<index> <bytes>" here. The cost
-// side of the benefit-per-byte label comes from this, measured rather than
-// estimated from bytecode size.
 extern const char* g_jitCodeDumpPath;
+// Nanoseconds spent in predictJITCandidates, so --jit-stats can report what the
+// static predictor costs. Set once per module load; zero in every other mode.
+extern uint64_t g_jitPredictTimeNs;
+// How many times to repeat the extraction before reporting the time. One-shot
+// runs sit near the clock's noise floor on small modules, so the harness can
+// ask for many and divide.
+extern int g_jitPredictRepeats;
 
 bool loadJITCompileList(const char* path, std::vector<uint32_t>& outIndices);
 

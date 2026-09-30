@@ -156,7 +156,7 @@ private:
         if (moduleFunction->jitFunction() == nullptr) {
             Module* module = function->instance()->module();
             if (module->tierUpEnabled()
-                && moduleFunction->recordHotness(1, module->tierUpThreshold())) {
+                && moduleFunction->recordHotness(1, module->tierUpThresholdFor(moduleFunction))) {
                 module->tierUpCompile(moduleFunction);
             }
         }

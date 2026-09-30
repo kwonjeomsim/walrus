@@ -498,7 +498,7 @@ ByteCodeStackOffset* Interpreter::interpret(ExecutionState& state,
         ModuleFunction* mf = state.currentFunction()->asDefinedFunction()->moduleFunction();
         if (mf->jitFunction() == nullptr && mf->tierUpState() == ModuleFunction::TierUpState::Candidate) {
             tierUpFunction = mf;
-            tierUpThreshold = instance->module()->tierUpThreshold();
+            tierUpThreshold = instance->module()->tierUpThresholdFor(tierUpFunction);
         }
     }
 
