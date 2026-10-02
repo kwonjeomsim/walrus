@@ -40,8 +40,6 @@ namespace {
 // tools/jit-model/jit_decision_tree.py exactly.
 struct FuncFeature {
     int32_t index = 0;
-    // Feeds call_site_work; not a feature of its own since the product carries
-    // the same information with the function's size folded in.
     int32_t call_site_count = 0;
     int32_t body_size = 0;
     int32_t call_site_work = 0;
@@ -58,6 +56,7 @@ struct FuncFeature {
     int32_t exec_work_rounds_log2 = 0;
     int32_t indirect_caller_count = 0;
     int32_t max_indirect_caller_loop_depth = 0;
+    int32_t exec_count_rounds_log2 = 0;
 
     int32_t feature(int idx) const
     {
@@ -90,6 +89,10 @@ struct FuncFeature {
             return indirect_caller_count;
         case 13:
             return max_indirect_caller_loop_depth;
+        case 14:
+            return call_site_count;
+        case 15:
+            return exec_count_rounds_log2;
         default:
             return 0;
         }
@@ -111,6 +114,8 @@ constexpr const char* kFeatureNames[] = {
     "exec_work_rounds_log2",
     "indirect_caller_count",
     "max_indirect_caller_loop_depth",
+    "call_site_count",
+    "exec_count_rounds_log2",
 };
 constexpr int kFeatureNameCount = sizeof(kFeatureNames) / sizeof(kFeatureNames[0]);
 
@@ -119,9 +124,8 @@ constexpr int kFeatureNameCount = sizeof(kFeatureNames) / sizeof(kFeatureNames[0
 // Two estimates of how often a function runs. exec_count_sweep_log2 makes one
 // pass in call-graph-depth order; exec_work_rounds_log2 iterates the
 // propagation so cycles compound, then multiplies by the function's opcode
-// count. An unmultiplied _rounds counterpart existed and was dropped: it ranked
-// functions almost identically to _sweep (rank correlation 0.972) and removing
-// it changed nothing we could measure.
+// count; exec_count_rounds_log2 is the same estimate without that product.
+// All three are reported as fixedLog2.
 constexpr int64_t kDefaultTrip = 10;
 
 // Loop weight compounds as trip^depth, so a call seven loops deep is credited
@@ -146,7 +150,7 @@ static int32_t maxLoopWeightDepth()
     }();
     return v;
 }
-// exec_work_rounds_log2: propagation rounds and the fixed-point scale of its log.
+// Propagation rounds and the fixed-point scale shared by every *_log2 feature.
 constexpr size_t kEstRounds = 24;
 constexpr double kMaxEst = 1e18;
 constexpr double kLog2Scale = 16.0;
@@ -164,7 +168,6 @@ inline int32_t fixedLog2(double v)
     return static_cast<int32_t>(l > 30000.0 ? 30000.0 : (l < 0.0 ? 0.0 : l + 0.5));
 }
 constexpr int64_t kMaxStaticIters = 1000000000000000000LL;
-constexpr int32_t kMaxLog2Iters = 40;
 inline int64_t satMul(int64_t a, int64_t b)
 {
     if (a <= 0 || b <= 0) {
@@ -174,19 +177,6 @@ inline int64_t satMul(int64_t a, int64_t b)
         return kMaxStaticIters;
     }
     return a * b;
-}
-
-inline int32_t floorLog2(int64_t v)
-{
-    if (v <= 0) {
-        return 0;
-    }
-    int32_t r = 0;
-    while (v > 1 && r < kMaxLog2Iters) {
-        v >>= 1;
-        r++;
-    }
-    return r;
 }
 
 class FeatureCollector : public wabt::BinaryReaderNop {
@@ -529,7 +519,7 @@ private:
             }
         }
         for (size_t i = 0; i < N; ++i) {
-            m_funcs[i].exec_count_sweep_log2 = floorLog2(calls[i]);
+            m_funcs[i].exec_count_sweep_log2 = fixedLog2(static_cast<double>(calls[i]));
         }
     }
 
@@ -564,6 +554,7 @@ private:
             est.swap(next);
         }
         for (size_t i = 0; i < N; ++i) {
+            m_funcs[i].exec_count_rounds_log2 = fixedLog2(est[i]);
             m_funcs[i].exec_work_rounds_log2 =
                 fixedLog2(est[i] * static_cast<double>(m_funcs[i].body_size));
         }
