@@ -179,6 +179,27 @@ inline int64_t satMul(int64_t a, int64_t b)
     return a * b;
 }
 
+static bool modelUses(int feature)
+{
+    for (int n = 0; n < JITPredictorModel::kNodeCount; ++n) {
+        if (JITPredictorModel::kNodeFeature[n] == feature) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// At load only the features the model tests are computed; dumping for training computes all.
+struct FeatureNeeds {
+    bool indirect, callerCount, sweep, rounds;
+    static FeatureNeeds all() { return { true, true, true, true }; }
+    static FeatureNeeds model()
+    {
+        return { modelUses(12) || modelUses(13), modelUses(7), modelUses(10),
+                 modelUses(11) || modelUses(15) };
+    }
+};
+
 class FeatureCollector : public wabt::BinaryReaderNop {
 public:
     wabt::Result OnImportFunc(wabt::Index import_index,
@@ -378,18 +399,22 @@ public:
     // Everything that needs the whole call graph: call_site_count, caller_count,
     // caller_in_loop_count, max_caller_loop_depth, call_graph_depth, the two
     // exec_count_* estimates and the call_site_work / exec_work_* products.
-    void recordRestFeatures()
+    void recordRestFeatures(const FeatureNeeds& need)
     {
         const size_t N = m_funcs.size();
         for (size_t i = 0; i < N; ++i) {
             m_funcs[i].index = static_cast<int32_t>(i);
         }
-        recordIndirectCallers(N);
-        std::vector<std::unordered_set<uint32_t>> distinctCallers(N);
+        if (need.indirect) {
+            recordIndirectCallers(N);
+        }
+        std::vector<std::unordered_set<uint32_t>> distinctCallers(need.callerCount ? N : 0);
         for (const auto& s : m_callSites) {
             if (s.callee < N) {
                 m_funcs[s.callee].call_site_count++;
-                distinctCallers[s.callee].insert(s.caller);
+                if (need.callerCount) {
+                    distinctCallers[s.callee].insert(s.caller);
+                }
                 if (s.loopDepth > 0) {
                     m_funcs[s.callee].caller_in_loop_count++;
                 }
@@ -399,13 +424,19 @@ public:
             }
             m_adj[s.caller].push_back(s.callee);
         }
-        for (size_t i = 0; i < N; ++i) {
-            m_funcs[i].caller_count = static_cast<int32_t>(distinctCallers[i].size());
+        if (need.callerCount) {
+            for (size_t i = 0; i < N; ++i) {
+                m_funcs[i].caller_count = static_cast<int32_t>(distinctCallers[i].size());
+            }
         }
 
         setCallGraphDepths(N);
-        setExecCountSweep(N);
-        setExecCountRounds(N);
+        if (need.sweep) {
+            setExecCountSweep(N);
+        }
+        if (need.rounds) {
+            setExecCountRounds(N);
+        }
         std::unordered_map<uint32_t, std::vector<uint32_t>>().swap(m_adj);
         std::vector<CallSite>().swap(m_callSites);
         std::vector<IndirectSite>().swap(m_indirectSites);
@@ -686,7 +717,8 @@ bool writeFeatures(const std::vector<FuncFeature>& funcs, const char* path)
     return true;
 }
 
-bool collect(const uint8_t* wasm, size_t size, FeatureCollector& reader)
+bool collect(const uint8_t* wasm, size_t size, FeatureCollector& reader,
+             const FeatureNeeds& need = FeatureNeeds::model())
 {
     wabt::Features features;
     features.EnableAll();
@@ -696,7 +728,7 @@ bool collect(const uint8_t* wasm, size_t size, FeatureCollector& reader)
     if (wabt::Failed(wabt::ReadBinary(data, &reader, options))) {
         return false;
     }
-    reader.recordRestFeatures();
+    reader.recordRestFeatures(need);
     return true;
 }
 
@@ -777,7 +809,7 @@ bool loadJITCompileList(const char* path, std::vector<uint32_t>& outIndices)
 bool dumpJITFeatures(const uint8_t* wasm, size_t size, const char* path)
 {
     FeatureCollector reader;
-    if (!collect(wasm, size, reader)) {
+    if (!collect(wasm, size, reader, FeatureNeeds::all())) {
         return false;
     }
     return writeFeatures(reader.funcs(), path);
