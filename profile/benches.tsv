@@ -1,0 +1,267 @@
+tag	wall_s	cwd	args
+app_blake3	7.34	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_blake3.wasm
+app_brotli	2.50	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_brotli.wasm
+app_klib	2.71	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_klib.wasm
+app_libjpeg	5.27	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_libjpeg.wasm
+app_libpng	6.65	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_libpng.wasm
+app_lodepng	11.49	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_lodepng.wasm
+app_lua	3.92	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_lua.wasm
+app_lz4	9.97	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_lz4.wasm
+app_meshopt	6.17	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_meshopt.wasm
+app_miniz	22.63	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_miniz.wasm
+app_oniguruma	4.10	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_oniguruma.wasm
+app_pocketpy	3.64	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_pocketpy.wasm
+app_quickjs	11.60	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_quickjs.wasm
+app_stb	5.40	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_stb.wasm
+app_yyjson	2.41	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_yyjson.wasm
+app_zlib	11.48	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_zlib.wasm
+app_zstd	3.78	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/app_zstd.wasm
+beebs_aha-compress	3.99	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_aha-compress.wasm 162225
+beebs_aha-mont64	3.97	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_aha-mont64.wasm 267869
+beebs_bs	3.84	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_bs.wasm 1528296648
+beebs_bubblesort	3.87	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_bubblesort.wasm 2182752
+beebs_cnt	3.91	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_cnt.wasm 2640392
+beebs_compress	4.04	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_compress.wasm 723973
+beebs_cover	3.88	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_cover.wasm 172298573
+beebs_crc	3.96	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_crc.wasm 2064822
+beebs_crc32	3.98	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_crc32.wasm 183361
+beebs_cubic	3.93	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_cubic.wasm 7590
+beebs_dijkstra	4.00	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_dijkstra.wasm 3217
+beebs_dtoa	3.87	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_dtoa.wasm 377515
+beebs_duff	3.94	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_duff.wasm 86100821
+beebs_edn	3.93	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_edn.wasm 40811
+beebs_expint	3.86	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_expint.wasm 1796154
+beebs_fac	3.99	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_fac.wasm 5838970
+beebs_fasta	3.88	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_fasta.wasm 50871
+beebs_fdct	3.96	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_fdct.wasm 1177252
+beebs_fibcall	3.94	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_fibcall.wasm 1404462589
+beebs_fir	3.97	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_fir.wasm 11182
+beebs_frac	3.95	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_frac.wasm 920187
+beebs_huffbench	3.96	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_huffbench.wasm 99555
+beebs_insertsort	3.88	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_insertsort.wasm 16233105
+beebs_janne_complex	3.90	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_janne_complex.wasm 1382023486
+beebs_jfdctint	3.90	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_jfdctint.wasm 1066999
+beebs_lcdnum	3.85	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_lcdnum.wasm 50308152
+beebs_levenshtein	3.98	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_levenshtein.wasm 62733
+beebs_ludcmp	3.93	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_ludcmp.wasm 1295609
+beebs_mergesort	3.90	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_mergesort.wasm 14831
+beebs_miniz	3.92	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_miniz.wasm 859420
+beebs_minver	3.89	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_minver.wasm 2347340
+beebs_nbody	3.95	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_nbody.wasm 59076202
+beebs_ndes	3.93	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_ndes.wasm 104804
+beebs_nettle-aes	3.94	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_nettle-aes.wasm 35914
+beebs_nettle-arcfour	3.95	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_nettle-arcfour.wasm 199025
+beebs_nettle-des	3.95	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_nettle-des.wasm 676372
+beebs_nettle-md5	3.89	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_nettle-md5.wasm 3367328
+beebs_nettle-sha256	3.92	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_nettle-sha256.wasm 342300
+beebs_newlib-exp	3.91	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_newlib-exp.wasm 169773715
+beebs_newlib-log	3.97	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_newlib-log.wasm 5541643
+beebs_newlib-mod	4.18	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_newlib-mod.wasm 176247848
+beebs_newlib-sqrt	3.98	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_newlib-sqrt.wasm 1002771
+beebs_ns	3.98	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_ns.wasm 687315
+beebs_nsichneu	3.80	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_nsichneu.wasm 404020
+beebs_picojpeg	3.98	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_picojpeg.wasm 2639
+beebs_prime	3.87	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_prime.wasm 1426840
+beebs_qrduino	3.99	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_qrduino.wasm 2743
+beebs_qsort	3.92	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_qsort.wasm 2899759
+beebs_qurt	3.99	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_qurt.wasm 3839875
+beebs_recursion	3.95	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_recursion.wasm 1415279
+beebs_rijndael	4.00	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_rijndael.wasm 3963
+beebs_select	3.98	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_select.wasm 10371016
+beebs_sglib-arraybinsearch	3.98	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_sglib-arraybinsearch.wasm 197620
+beebs_sglib-dllist	3.95	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_sglib-dllist.wasm 1155299
+beebs_sglib-hashtable	3.97	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_sglib-hashtable.wasm 985913
+beebs_sglib-listinsertsort	3.95	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_sglib-listinsertsort.wasm 1231490
+beebs_sglib-queue	3.97	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_sglib-queue.wasm 103888
+beebs_slre	3.98	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_slre.wasm 88599
+beebs_sqrt	3.92	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_sqrt.wasm 78522
+beebs_st	3.96	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_st.wasm 511336
+beebs_statemate	3.92	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_statemate.wasm 5940233
+beebs_stb_perlin	3.98	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_stb_perlin.wasm 90876
+beebs_stringsearch1	4.28	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_stringsearch1.wasm 520235
+beebs_strstr	3.93	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_strstr.wasm 2664004
+beebs_tarai	3.94	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_tarai.wasm 8505934
+beebs_template	3.92	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_template.wasm 1559389678
+beebs_ud	3.96	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_ud.wasm 1140001
+beebs_whetstone	3.92	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_whetstone.wasm 1036845
+beebs_wikisort	4.01	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/beebs_wikisort.wasm 6238
+cmpro_zip-test	33.13	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/cmpro_zip-test.wasm
+embench_aha-mont64	6.31	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_aha-mont64.wasm
+embench_crc32	3.40	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_crc32.wasm
+embench_depthconv	5.55	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_depthconv.wasm
+embench_edn	7.82	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_edn.wasm
+embench_huffbench	6.29	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_huffbench.wasm
+embench_matmult-int	2.24	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_matmult-int.wasm
+embench_md5sum	5.64	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_md5sum.wasm
+embench_nettle-aes	8.22	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_nettle-aes.wasm
+embench_nettle-sha256	6.42	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_nettle-sha256.wasm
+embench_nsichneu	5.33	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_nsichneu.wasm
+embench_picojpeg	7.78	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_picojpeg.wasm
+embench_qrduino	7.50	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_qrduino.wasm
+embench_sglib-combined	6.35	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_sglib-combined.wasm
+embench_slre	5.21	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_slre.wasm
+embench_statemate	4.64	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_statemate.wasm
+embench_ud	6.50	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_ud.wasm
+embench_xgboost	6.72	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/embench_xgboost.wasm
+llvm_Adobe-C++_functionobjects	22.19	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Adobe-C++_functionobjects.wasm
+llvm_Adobe-C++_loop_unroll	14.99	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Adobe-C++_loop_unroll.wasm
+llvm_Adobe-C++_simple_types_constant_folding	6.99	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Adobe-C++_simple_types_constant_folding.wasm
+llvm_Adobe-C++_simple_types_loop_invariant	12.23	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Adobe-C++_simple_types_loop_invariant.wasm
+llvm_Adobe-C++_stepanov_abstraction	28.72	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Adobe-C++_stepanov_abstraction.wasm
+llvm_Adobe-C++_stepanov_vector	18.86	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Adobe-C++_stepanov_vector.wasm
+llvm_BenchmarkGame_fannkuch	20.46	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_BenchmarkGame_fannkuch.wasm
+llvm_BenchmarkGame_n-body	7.67	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_BenchmarkGame_n-body.wasm
+llvm_BenchmarkGame_nsieve-bits	6.57	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_BenchmarkGame_nsieve-bits.wasm
+llvm_BenchmarkGame_partialsums	5.73	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_BenchmarkGame_partialsums.wasm
+llvm_BenchmarkGame_puzzle	5.12	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_BenchmarkGame_puzzle.wasm
+llvm_BenchmarkGame_spectral-norm	2.94	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_BenchmarkGame_spectral-norm.wasm
+llvm_CoyoteBench_almabench	103.43	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_CoyoteBench_almabench.wasm
+llvm_CoyoteBench_lpbench	33.44	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_CoyoteBench_lpbench.wasm
+llvm_Dhrystone_dry	3.92	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Dhrystone_dry.wasm
+llvm_Dhrystone_fldry	4.91	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Dhrystone_fldry.wasm
+llvm_Large_fasta	2.89	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Large_fasta.wasm
+llvm_Large_ray	31.89	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Large_ray.wasm
+llvm_Large_sphereflake	29.26	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Large_sphereflake.wasm
+llvm_Linpack_linpack-pc	63.57	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Linpack_linpack-pc.wasm
+llvm_McGill_queens	12.88	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_McGill_queens.wasm
+llvm_Misc-C++_mandel-text	7.90	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc-C++_mandel-text.wasm
+llvm_Misc-C++_stepanov_v1p2	32.95	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc-C++_stepanov_v1p2.wasm
+llvm_Misc_dt	4.12	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_dt.wasm
+llvm_Misc_evalloop	6.26	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_evalloop.wasm
+llvm_Misc_fbench	11.68	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_fbench.wasm
+llvm_Misc_ffbench	3.88	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_ffbench.wasm
+llvm_Misc_flops	19.12	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_flops.wasm
+llvm_Misc_flops-1	7.69	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_flops-1.wasm
+llvm_Misc_flops-3	9.56	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_flops-3.wasm
+llvm_Misc_flops-4	4.94	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_flops-4.wasm
+llvm_Misc_flops-5	11.02	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_flops-5.wasm
+llvm_Misc_flops-6	8.00	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_flops-6.wasm
+llvm_Misc_flops-7	3.47	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_flops-7.wasm
+llvm_Misc_flops-8	8.52	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_flops-8.wasm
+llvm_Misc_fp-convert	41.39	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_fp-convert.wasm
+llvm_Misc_himenobmtxpa	6.00	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_himenobmtxpa.wasm
+llvm_Misc_mandel	4.77	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_mandel.wasm
+llvm_Misc_mandel-2	4.14	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_mandel-2.wasm
+llvm_Misc_matmul_f64_4x4	15.10	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_matmul_f64_4x4.wasm
+llvm_Misc_perlin	22.34	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_perlin.wasm
+llvm_Misc_revertBits	5.60	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_revertBits.wasm
+llvm_Misc_richards_benchmark	11.20	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_richards_benchmark.wasm
+llvm_Misc_salsa20	94.38	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_salsa20.wasm
+llvm_Misc_whetstone	4.71	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_whetstone.wasm
+llvm_Shootout-C++_ary3	19.33	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout-C++_ary3.wasm
+llvm_Shootout-C++_fibo	23.07	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout-C++_fibo.wasm
+llvm_Shootout-C++_hash	2.91	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout-C++_hash.wasm
+llvm_Shootout-C++_hash2	17.11	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout-C++_hash2.wasm
+llvm_Shootout-C++_heapsort	10.23	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout-C++_heapsort.wasm
+llvm_Shootout-C++_lists	36.48	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout-C++_lists.wasm
+llvm_Shootout-C++_matrix	50.87	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout-C++_matrix.wasm
+llvm_Shootout-C++_methcall	55.48	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout-C++_methcall.wasm
+llvm_Shootout-C++_random	3.43	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout-C++_random.wasm
+llvm_Shootout-C++_sieve	4.93	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout-C++_sieve.wasm
+llvm_Shootout_ary3	19.82	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout_ary3.wasm
+llvm_Shootout_fib2	23.63	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout_fib2.wasm
+llvm_Shootout_hash	21.18	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout_hash.wasm
+llvm_Shootout_heapsort	10.02	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout_heapsort.wasm
+llvm_Shootout_lists	41.59	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout_lists.wasm
+llvm_Shootout_matrix	36.20	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout_matrix.wasm
+llvm_Shootout_methcall	42.26	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout_methcall.wasm
+llvm_Shootout_random	3.44	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout_random.wasm
+llvm_Shootout_sieve	43.41	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout_sieve.wasm
+llvm_Stanford_FloatMM	5.20	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Stanford_FloatMM.wasm
+llvm_ms_ASC_Sequoia_AMGmk	105.82	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_ASC_Sequoia_AMGmk.wasm
+llvm_ms_ASC_Sequoia_CrystalMk	60.32	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_ASC_Sequoia_CrystalMk.wasm
+llvm_ms_BitBench_drop3	4.35	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_BitBench_drop3	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_BitBench_drop3/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_BitBench_drop3/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_BitBench_drop3.wasm 1 input-file
+llvm_ms_BitBench_five11	17.18	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_BitBench_five11	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_BitBench_five11/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_BitBench_five11/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_BitBench_five11.wasm 1 input-file
+llvm_ms_DOE-ProxyApps-C++_HACCKernels	16.63	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C++_HACCKernels	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C++_HACCKernels/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C++_HACCKernels/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_DOE-ProxyApps-C++_HACCKernels.wasm 1 450
+llvm_ms_DOE-ProxyApps-C++_PENNANT	7.33	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C++_PENNANT	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C++_PENNANT/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C++_PENNANT/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_DOE-ProxyApps-C++_PENNANT.wasm 1 intermediate_leblanc.pnt
+llvm_ms_DOE-ProxyApps-C_CoMD	16.77	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_CoMD	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_CoMD/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_CoMD/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_DOE-ProxyApps-C_CoMD.wasm 1 -e -x 10 -y 10 -z 10 --potDir .
+llvm_ms_DOE-ProxyApps-C_Pathfinder	23.75	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_Pathfinder	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_Pathfinder/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_Pathfinder/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_DOE-ProxyApps-C_Pathfinder.wasm 1 -x medsmall1.adj_list
+llvm_ms_DOE-ProxyApps-C_RSBench	3.79	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_RSBench	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_RSBench/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_RSBench/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_DOE-ProxyApps-C_RSBench.wasm 1 -s small -l 100000 -p 1000 -w 1000
+llvm_ms_DOE-ProxyApps-C_SimpleMOC	27.23	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_SimpleMOC	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_SimpleMOC/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_SimpleMOC/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_DOE-ProxyApps-C_SimpleMOC.wasm 1 -i default.in
+llvm_ms_DOE-ProxyApps-C_XSBench	5.46	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_XSBench	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_XSBench/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_XSBench/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_DOE-ProxyApps-C_XSBench.wasm 1 -s small -g 1250 -l 1000000
+llvm_ms_DOE-ProxyApps-C_miniGMG	6.64	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_miniGMG	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_miniGMG/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_DOE-ProxyApps-C_miniGMG/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_DOE-ProxyApps-C_miniGMG.wasm 1 5 2 2 2 1 1 1
+llvm_ms_FreeBench_distray	3.31	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_distray	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_distray/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_distray/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_FreeBench_distray.wasm 4 test.in
+llvm_ms_FreeBench_fourinarow	3.54	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_fourinarow	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_fourinarow/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_fourinarow/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_FreeBench_fourinarow.wasm 1 test.in
+llvm_ms_FreeBench_mason	2.03	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_mason	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_mason/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_mason/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_FreeBench_mason.wasm 1 test.in
+llvm_ms_FreeBench_neural	3.33	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_neural	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_neural/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_neural/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_FreeBench_neural.wasm 3 test.in
+llvm_ms_FreeBench_pcompress2	2.08	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_pcompress2	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_pcompress2/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_pcompress2/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_FreeBench_pcompress2.wasm 1 test.in
+llvm_ms_FreeBench_pifft	3.73	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_pifft	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_pifft/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_FreeBench_pifft/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_FreeBench_pifft.wasm 4 test.in
+llvm_ms_McCat_03-testtrie	3.93	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_McCat_03-testtrie	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_McCat_03-testtrie/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_McCat_03-testtrie/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_McCat_03-testtrie.wasm 77 testtrie.in2
+llvm_ms_McCat_12-IOtest	2.27	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_McCat_12-IOtest.wasm
+llvm_ms_McCat_18-imp	3.52	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_McCat_18-imp	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_McCat_18-imp/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_McCat_18-imp/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_McCat_18-imp.wasm 7 ./sg01.imp
+llvm_ms_MiBench_automotive-basicmath	4.55	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_MiBench_automotive-basicmath.wasm
+llvm_ms_MiBench_automotive-bitcount	3.81	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_MiBench_automotive-bitcount	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_MiBench_automotive-bitcount/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_MiBench_automotive-bitcount/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_MiBench_automotive-bitcount.wasm 6 1125000
+llvm_ms_MiBench_automotive-susan	3.43	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_MiBench_automotive-susan	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_MiBench_automotive-susan/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_MiBench_automotive-susan/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_MiBench_automotive-susan.wasm 6 input_large.pgm /dev/null -s
+llvm_ms_MiBench_security-rijndael	3.87	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_MiBench_security-rijndael	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_MiBench_security-rijndael/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_MiBench_security-rijndael/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_MiBench_security-rijndael.wasm 10 output_large.enc /dev/null d 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
+llvm_ms_MiBench_security-sha	3.85	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_MiBench_security-sha	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_MiBench_security-sha/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_MiBench_security-sha/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_MiBench_security-sha.wasm 14 input_large.asc
+llvm_ms_MiBench_telecomm-CRC32	3.38	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_MiBench_telecomm-CRC32	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_MiBench_telecomm-CRC32/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_MiBench_telecomm-CRC32/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_MiBench_telecomm-CRC32.wasm 3 large.pcm
+llvm_ms_NPB-serial_dc	10.34	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_NPB-serial_dc	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_NPB-serial_dc/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_NPB-serial_dc/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_NPB-serial_dc.wasm 1 10000000 ADC.par
+llvm_ms_NPB-serial_is	30.00	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_NPB-serial_is.wasm
+llvm_ms_Olden_bisort	8.48	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Olden_bisort	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Olden_bisort/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Olden_bisort/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_Olden_bisort.wasm 1 3000000
+llvm_ms_Olden_health	9.80	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Olden_health	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Olden_health/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Olden_health/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_Olden_health.wasm 1 10 40 1
+llvm_ms_Olden_mst	6.06	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Olden_mst	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Olden_mst/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Olden_mst/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_Olden_mst.wasm 1 4000
+llvm_ms_Olden_power	2.26	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_Olden_power.wasm
+llvm_ms_Prolangs-C++_life	12.76	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_Prolangs-C++_life.wasm
+llvm_ms_Ptrdist_anagram	10.61	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Ptrdist_anagram	--stdin /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Ptrdist_anagram/input.OUT --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Ptrdist_anagram/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Ptrdist_anagram/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_Ptrdist_anagram.wasm 1 words 2
+llvm_ms_Ptrdist_bc	6.25	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Ptrdist_bc	--stdin /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Ptrdist_bc/primes.b --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Ptrdist_bc/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Ptrdist_bc/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_Ptrdist_bc.wasm 1
+llvm_ms_Ptrdist_ks	8.94	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Ptrdist_ks	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Ptrdist_ks/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Ptrdist_ks/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_Ptrdist_ks.wasm 1 KL-4.in
+llvm_ms_Ptrdist_yacr2	16.02	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Ptrdist_yacr2	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Ptrdist_yacr2/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Ptrdist_yacr2/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_Ptrdist_yacr2.wasm 1 input2.in
+llvm_ms_Trimaran_enc-3des	39.50	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_enc-3des	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_enc-3des/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_enc-3des/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_Trimaran_enc-3des.wasm 1 200
+llvm_ms_Trimaran_enc-md5	45.18	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_enc-md5	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_enc-md5/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_enc-md5/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_Trimaran_enc-md5.wasm 1 50
+llvm_ms_Trimaran_enc-pc1	26.86	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_enc-pc1	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_enc-pc1/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_enc-pc1/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_Trimaran_enc-pc1.wasm 1 20000000
+llvm_ms_Trimaran_enc-rc4	74.53	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_enc-rc4	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_enc-rc4/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_enc-rc4/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_Trimaran_enc-rc4.wasm 1 1000000
+llvm_ms_Trimaran_netbench-crc	12.69	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_netbench-crc	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_netbench-crc/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_netbench-crc/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_Trimaran_netbench-crc.wasm 1 40000
+llvm_ms_Trimaran_netbench-url	23.09	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_netbench-url	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_netbench-url/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_Trimaran_netbench-url/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_Trimaran_netbench-url.wasm 1 medium_inputs 1400
+llvm_ms_VersaBench_8b10b	3.88	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_VersaBench_8b10b	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_VersaBench_8b10b/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_VersaBench_8b10b/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_VersaBench_8b10b.wasm 10 input.txt 2000
+llvm_ms_VersaBench_bmm	17.85	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_VersaBench_bmm	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_VersaBench_bmm/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_VersaBench_bmm/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_VersaBench_bmm.wasm 1 1024 1024
+llvm_ms_VersaBench_ecbdes	63.97	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_VersaBench_ecbdes	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_VersaBench_ecbdes/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_VersaBench_ecbdes/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_VersaBench_ecbdes.wasm 1 34
+llvm_ms_llubenchmark	11.51	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_llubenchmark	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_llubenchmark/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_llubenchmark/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_llubenchmark.wasm 1 -i 6000
+llvm_ms_mediabench_mpeg2_mpeg2dec	3.61	/home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_mediabench_mpeg2_mpeg2dec	--mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_mediabench_mpeg2_mpeg2dec/ / --mapdirs /home/soonbkwon/projects/wasmDataset/lbin/llvm_ms_mediabench_mpeg2_mpeg2dec/ . --args /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_ms_mediabench_mpeg2_mpeg2dec.wasm 30 -b mei16v2.m2v -r -f -o0 tmp%d
+tacle_adpcm_dec	3.64	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_adpcm_dec.wasm 45689
+tacle_adpcm_enc	3.96	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_adpcm_enc.wasm 47857
+tacle_binarysearch	3.99	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_binarysearch.wasm 4605871
+tacle_bitcount	3.95	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_bitcount.wasm 187603
+tacle_bitonic	3.92	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_bitonic.wasm 289111
+tacle_bsort	3.89	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_bsort.wasm 35971
+tacle_cjpeg_transupp	3.95	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_cjpeg_transupp.wasm 2716
+tacle_cjpeg_wrbmp	3.89	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_cjpeg_wrbmp.wasm 50676
+tacle_complex_updates	3.94	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_complex_updates.wasm 2414935
+tacle_cosf	3.96	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_cosf.wasm 222776
+tacle_countnegative	3.95	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_countnegative.wasm 224613
+tacle_cover	3.87	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_cover.wasm 108687604
+tacle_cubic	3.99	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_cubic.wasm 2785
+tacle_deg2rad	3.92	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_deg2rad.wasm 778928
+tacle_dijkstra	43.82	/home/soonbkwon/projects/wasmDataset/external/wasm	/home/soonbkwon/projects/wasmDataset/external/wasm/tacle_dijkstra.wasm
+tacle_duff	3.97	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_duff.wasm 2203654
+tacle_epic	4.00	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_epic.wasm 752
+tacle_fac	3.96	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_fac.wasm 13978431
+tacle_fft	4.00	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_fft.wasm 6153
+tacle_filterbank	3.99	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_filterbank.wasm 1042
+tacle_fir2dim	3.98	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_fir2dim.wasm 869340
+tacle_fmref	3.92	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_fmref.wasm 11269
+tacle_gsm_dec	3.98	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_gsm_dec.wasm 1169
+tacle_gsm_enc	4.01	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_gsm_enc.wasm 680
+tacle_h264_dec	3.85	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_h264_dec.wasm 19114
+tacle_huff_enc	3.98	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_huff_enc.wasm 6518
+tacle_iir	3.69	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_iir.wasm 2917289
+tacle_insertsort	3.92	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_insertsort.wasm 2452632
+tacle_isqrt	4.00	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_isqrt.wasm 4006
+tacle_jfdctint	3.97	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_jfdctint.wasm 777478
+tacle_lms	3.99	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_lms.wasm 31387
+tacle_ludcmp	4.11	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_ludcmp.wasm 1014078
+tacle_matrix1	3.83	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_matrix1.wasm 264573
+tacle_md5	4.01	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_md5.wasm 446
+tacle_minver	3.81	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_minver.wasm 2211213
+tacle_ndes	3.65	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_ndes.wasm 52988
+tacle_petrinet	3.97	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_petrinet.wasm 1887992
+tacle_pm	3.99	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_pm.wasm 379
+tacle_powerwindow	3.99	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_powerwindow.wasm 2174
+tacle_prime	3.98	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_prime.wasm 14511703
+tacle_quicksort	4.00	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_quicksort.wasm 1103
+tacle_rad2deg	3.95	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_rad2deg.wasm 793503
+tacle_recursion	3.85	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_recursion.wasm 1402716
+tacle_rijndael_dec	4.01	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_rijndael_dec.wasm 833
+tacle_rijndael_enc	4.03	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_rijndael_enc.wasm 836
+tacle_sha	4.00	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_sha.wasm 1268
+tacle_st	3.94	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_st.wasm 40058
+tacle_statemate	3.98	/home/soonbkwon/projects/wasmDataset/external/wasm	--args /home/soonbkwon/projects/wasmDataset/external/wasm/tacle_statemate.wasm 66755
