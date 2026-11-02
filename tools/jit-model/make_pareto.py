@@ -19,7 +19,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-R = Path("/home/soonbkwon/projects/walrus")
+R = Path(__file__).resolve().parents[2]
 
 # dataviz reference palette: blue ramp for our own staged model, neutral ink for
 # the baselines, so the eye separates "ours" from "theirs" before reading labels.
@@ -38,8 +38,13 @@ plt.rcParams.update({
 })
 
 
-def load(path: Path):
-    """Build the coordinates of every mode from one run_modes.py JSON."""
+def load(path: Path, geomean: bool = False):
+    """Build the coordinates of every mode from one run_modes.py JSON.
+
+    With geomean, the speed axis is geometric-mean attainment (equal weight per benchmark);
+    the code axis stays the ratio of sums.
+    """
+    import math
     d = json.loads(path.read_text())
     tags = sorted(d)
     ti = sum(d[t]["interp"]["t"] for t in tags)
@@ -54,7 +59,12 @@ def load(path: Path):
             continue
         tsum = sum(d[t][mode]["t"] for t in tags)
         csum = sum(d[t][mode]["code"] for t in tags)
-        pts[name] = ((ti - tsum) / (ti - ta), csum / ca)
+        if geomean:
+            lj = sum(math.log(d[t]["interp"]["t"] / d[t]["alljit"]["t"]) for t in tags)
+            lm = sum(math.log(d[t]["interp"]["t"] / d[t][mode]["t"]) for t in tags)
+            pts[name] = (lm / lj, csum / ca)
+        else:
+            pts[name] = ((ti - tsum) / (ti - ta), csum / ca)
     return pts, len(tags)
 
 
@@ -63,8 +73,9 @@ def main():
     ap.add_argument("--data", required=True, help="run_modes.py results JSON")
     ap.add_argument("--frontier", help="make_theta_frontier.py results JSON")
     ap.add_argument("--out", default=str(R / "docs/figures/pareto"))
+    ap.add_argument("--geomean", action="store_true", help="use geometric-mean attainment for the speed axis")
     args = ap.parse_args()
-    pts, n = load(Path(args.data))
+    pts, n = load(Path(args.data), args.geomean)
 
     fig, ax = plt.subplots(figsize=(6.4, 4.4))
     ax.set_axisbelow(True)

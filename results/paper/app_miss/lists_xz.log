@@ -1,0 +1,10 @@
+rep 1/10 interp 15.50  alljit 1.51  tierup 2.49  O1 11.28  O2 10.86  O3 7.54  O3+A 3.00  O3+B 6.02  O3+AB 1.48  O3+ABC 1.48  oracle 3.16
+rep 2/10 interp 15.57  alljit 1.51  tierup 2.50  O1 11.33  O2 11.00  O3 7.52  O3+A 3.03  O3+B 6.02  O3+AB 1.48  O3+ABC 1.48  oracle 3.16
+rep 3/10 interp 15.49  alljit 1.52  tierup 2.49  O1 11.25  O2 10.79  O3 7.48  O3+A 3.02  O3+B 6.17  O3+AB 1.48  O3+ABC 1.48  oracle 3.16
+rep 4/10 interp 15.43  alljit 1.51  tierup 2.53  O1 11.32  O2 10.86  O3 7.56  O3+A 3.00  O3+B 6.11  O3+AB 1.48  O3+ABC 1.49  oracle 3.17
+rep 5/10 interp 15.39  alljit 1.51  tierup 2.49  O1 11.36  O2 10.84  O3 7.55  O3+A 3.01  O3+B 6.12  O3+AB 1.49  O3+ABC 1.48  oracle 3.16
+rep 6/10 interp 15.51  alljit 1.51  tierup 2.52  O1 11.28  O2 10.74  O3 7.52  O3+A 3.01  O3+B 6.07  O3+AB 1.48  O3+ABC 1.48  oracle 3.16
+rep 7/10 interp 15.55  alljit 1.51  tierup 2.49  O1 11.37  O2 10.75  O3 7.61  O3+A 3.01  O3+B 6.05  O3+AB 1.48  O3+ABC 1.48  oracle 3.14
+rep 8/10 interp 15.58  alljit 1.51  tierup 2.49  O1 11.27  O2 10.84  O3 7.51  O3+A 3.01  O3+B 6.12  O3+AB 1.48  O3+ABC 1.48  oracle 3.17
+rep 9/10 interp 15.48  alljit 1.51  tierup 2.49  O1 11.27  O2 10.92  O3 7.64  O3+A 2.99  O3+B 6.07  O3+AB 1.48  O3+ABC 1.48  oracle 3.15
+rep 10/10 interp 15.42  alljit 1.51  tierup 2.49  O1 11.42  O2 10.76  O3 7.60  O3+A 3.05  O3+B 6.06  O3+AB 1.48  O3+ABC 1.49  oracle 3.16

@@ -1,0 +1,12 @@
+==== Walrus per-function profile (labeled) ====
+# benchmark = llvm_Dhrystone_dry
+# source    = /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Dhrystone_dry.wasm
+# wall_s    = 3.98   rc=0
+function                         module  index  bytecode_sz     self_time_ns   time_frac  label
+$_start                               0      1         1800       3944006125    0.999992      1
+func                                  0      2          272            11473    0.000003      0
+func                                  0      3           80             3482    0.000001      0
+func                                  0      4          400                0    0.000000      0
+func                                  0      5        21960            17881    0.000005      0
+func                                  0      6           40              220    0.000000      0
+func                                  0      7           40               76    0.000000      0

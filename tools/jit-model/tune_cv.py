@@ -35,8 +35,8 @@ import eval_metrics as M  # noqa: E402
 from jit_decision_tree import FEATURE_NAMES  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[2]
-LEVELS = [("O1", 4.0, "profile/train5_t4.0"), ("O2", 2.0, "profile/train5_t2.0"),
-          ("O3", 1.0, "profile/train5_t1.0")]
+LEVELS = [("O1", 4.0, "profile/train6_t4.0"), ("O2", 2.0, "profile/train6_t2.0"),
+          ("O3", 1.0, "profile/train6_t1.0")]
 
 BODY = ["local_count", "branch_count", "call_indirect_count", "is_leaf_function",
         "max_own_loop_depth"]
@@ -190,7 +190,7 @@ def main() -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("run")
     r.add_argument("--baselines", required=True)
-    r.add_argument("--codesize", default=str(REPO / "profile/codesize5"))
+    r.add_argument("--codesize", default=str(REPO / "profile/codesize6"))
     r.add_argument("--out", required=True)
     r.add_argument("--k", type=int, default=5)
     r.add_argument("--repeats", type=int, default=3)

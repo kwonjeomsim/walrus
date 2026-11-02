@@ -1,0 +1,3 @@
+benchmark	wall_s	rc	n_funcs	n_hot	log_size	source
+app_xz	16.27	0	294	0	28470	/home/cilab/apps15_kit/wasm/app_xz.wasm
+app_janet	16.11	0	1301	0	125148	/home/cilab/apps15_kit/wasm/app_janet.wasm

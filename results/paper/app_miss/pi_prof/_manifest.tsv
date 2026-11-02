@@ -1,0 +1,3 @@
+tag	cwd	args	interp_s	n_hot	n_funcs
+app_xz	/home/cilab/apps15_kit/wasm	/home/cilab/apps15_kit/wasm/app_xz.wasm	15.000	0	294
+app_janet	/home/cilab/apps15_kit/wasm	/home/cilab/apps15_kit/wasm/app_janet.wasm	15.000	0	1301

@@ -137,6 +137,9 @@ def main() -> int:
     ap.add_argument("--repeats", type=int, default=3)
     ap.add_argument("--cpu", type=int, default=None, help="pin to this single core")
     ap.add_argument("--only", default=None, help="only these comma-separated benchmarks (for testing)")
+    ap.add_argument("--pre-only", action="store_true",
+                    help="measure only the precompile control (existing lists are not recollected)")
+    ap.add_argument("--lists", default=None, help="compile list directory (default: _lists next to --out)")
     ap.add_argument("--remap", action="append", default=[], metavar="OLD=NEW",
                     help="rewrite paths in the bench list (for running on another machine). May be repeated")
     args = ap.parse_args()
@@ -146,8 +149,11 @@ def main() -> int:
 
     ks = [int(x) for x in args.k.split(",") if x]
     ts = [int(x) for x in args.t.split(",") if x]
-    out_path = Path(args.out)
+    out_path = Path(args.out).resolve()
+    # walrus runs in the benchmark dir. A relative path misses the lists and silently interprets.
     list_dir = out_path.with_suffix("").parent / (out_path.stem + "_lists")
+    if args.lists:
+        list_dir = Path(args.lists).resolve()
     list_dir.mkdir(parents=True, exist_ok=True)
     register_modes(ks, ts, list_dir)
 
@@ -156,6 +162,8 @@ def main() -> int:
     if not args.no_pre:
         modes += [f"pre_K{k}" for k in ks]
     modes += [f"uniform_T{t}" for t in ts]
+    if args.pre_only:
+        modes = [f"pre_K{k}" for k in ks]
 
     benches = bench_rows(args)
     if args.only:
@@ -177,7 +185,8 @@ def main() -> int:
             continue
         wasm_args, stdin_path = split_args(argstr)
         timeout = max(120.0, wall * 8)
-        if not args.no_pre:
+        have = all((list_dir / f"{tag}.K{k}.txt").exists() for k in ks)
+        if not args.no_pre and not (args.pre_only and have):
             bad = [k for k in ks if not collect_list(args.walrus, k, tag, wasm_args,
                                                     stdin_path, cwd, timeout, env, list_dir)]
             if bad:
@@ -216,8 +225,9 @@ def main() -> int:
                         for m in modes}
             el = (time.time() - t_start) / 60
             r0 = res[tag]
+            m0 = modes[0] if args.pre_only else f"tierup_K{ks[0]}"
             print(f"[{i:>3}/{len(benches)}] {tag:<40} interp {r0.get('interp', {}).get('t', 0):7.2f}s "
-                  f"K1 {r0[f'tierup_K{ks[0]}']['t']:7.2f}s  elapsed {el:6.1f}min", flush=True)
+                  f"{m0} {r0[m0]['t']:7.2f}s  elapsed {el:6.1f}min", flush=True)
         out_path.write_text(json.dumps(res, indent=1, sort_keys=True))
 
     ok = sum(1 for v in res.values() if v)

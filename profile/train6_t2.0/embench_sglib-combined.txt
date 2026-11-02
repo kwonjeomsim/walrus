@@ -1,0 +1,16 @@
+==== Walrus per-function profile (labeled) ====
+# benchmark = embench_sglib-combined
+# source    = /home/soonbkwon/projects/wasmDataset/external/wasm/embench_sglib-combined.wasm
+# wall_s    = 7.13   rc=0
+function                         module  index  bytecode_sz     self_time_ns   time_frac  label
+$_start                               0      3         3472            28810    0.000004      0
+func                                  0      4         2416       1709716823    0.240535      1
+func                                  0      5        14504       4855899123    0.683162      1
+func                                  0      6          536        542316651    0.076297      1
+func                                  0      7           32                0    0.000000      0
+func                                  0      8           32                0    0.000000      0
+func                                  0      9          400                0    0.000000      0
+func                                  0     10        27416            11861    0.000002      0
+func                                  0     11         6936                0    0.000000      0
+func                                  0     12           40               97    0.000000      0
+func                                  0     13           40               62    0.000000      0

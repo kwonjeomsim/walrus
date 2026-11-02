@@ -1,0 +1,7 @@
+benchmark	wall_s	rc	n_funcs	n_hot	log_size	source
+app_xz	3.75	0	294	0	28497	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm/app_xz.wasm
+app_berry	4.29	0	946	0	91095	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm/app_berry.wasm
+app_janet	4.02	0	1301	0	125175	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm/app_janet.wasm
+app_tinycc	7.69	0	297	0	28793	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm/app_tinycc.wasm
+app_libarchive	5.17	0	973	0	93697	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm/app_libarchive.wasm
+app_libpng	2.57	0	382	0	36953	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm/app_libpng.wasm

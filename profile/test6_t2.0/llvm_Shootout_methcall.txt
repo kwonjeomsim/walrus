@@ -1,0 +1,36 @@
+==== Walrus per-function profile (labeled) ====
+# benchmark = llvm_Shootout_methcall
+# source    = /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Shootout_methcall.wasm
+# wall_s    = 90.12   rc=0
+function                         module  index  bytecode_sz     self_time_ns   time_frac  label
+$_start                               0      7         6744      48736501980    0.540877      1
+func                                  0      8           40      16978099230    0.188423      1
+func                                  0      9           72       8511058185    0.094456      1
+func                                  0     10          232      15880750782    0.176244      1
+func                                  0     11           32                0    0.000000      0
+func                                  0     12           32                0    0.000000      0
+func                                  0     13          584              427    0.000000      0
+func                                  0     14         3336             3565    0.000000      0
+func                                  0     15          240                0    0.000000      0
+func                                  0     16          472            19720    0.000000      0
+func                                  0     17         1416             1397    0.000000      0
+func                                  0     18          728             9852    0.000000      0
+func                                  0     19          488                0    0.000000      0
+func                                  0     20          400                0    0.000000      0
+func                                  0     21        27416             9600    0.000000      0
+func                                  0     22           40                0    0.000000      0
+func                                  0     23         6936             1508    0.000000      0
+func                                  0     24           40               74    0.000000      0
+func                                  0     25           40              325    0.000000      0
+func                                  0     26           40               62    0.000000      0
+func                                  0     27           40               53    0.000000      0
+func                                  0     28           40               56    0.000000      0
+func                                  0     29           40               54    0.000000      0
+func                                  0     30           40               50    0.000000      0
+func                                  0     31           40               49    0.000000      0
+func                                  0     32           40               67    0.000000      0
+func                                  0     33           40               51    0.000000      0
+func                                  0     34           40               49    0.000000      0
+func                                  0     35           40               49    0.000000      0
+func                                  0     36           40               46    0.000000      0
+func                                  0     37           40               45    0.000000      0

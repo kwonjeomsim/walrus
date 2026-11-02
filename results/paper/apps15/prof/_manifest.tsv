@@ -1,0 +1,7 @@
+tag	cwd	args	interp_s	n_hot	n_funcs
+app_xz	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm/app_xz.wasm	15.000	0	294
+app_berry	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm/app_berry.wasm	15.000	0	946
+app_janet	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm/app_janet.wasm	15.000	0	1301
+app_tinycc	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm/app_tinycc.wasm	15.000	0	297
+app_libarchive	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm/app_libarchive.wasm	15.000	0	973
+app_libpng	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm	/home/soonbkwon/projects/walrus/results/apps15_kit/wasm/app_libpng.wasm	15.000	0	382
