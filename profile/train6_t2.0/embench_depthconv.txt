@@ -1,0 +1,14 @@
+==== Walrus per-function profile (labeled) ====
+# benchmark = embench_depthconv
+# source    = /home/soonbkwon/projects/wasmDataset/external/wasm/embench_depthconv.wasm
+# wall_s    = 5.58   rc=0
+function                         module  index  bytecode_sz     self_time_ns   time_frac  label
+$_start                               0      3         2512            12388    0.000002      0
+func                                  0      4         1568       5556571193    0.999997      1
+func                                  0      5           32                0    0.000000      0
+func                                  0      6           32                0    0.000000      0
+func                                  0      7          400                0    0.000000      0
+func                                  0      8        27416             6525    0.000001      0
+func                                  0      9         6936                0    0.000000      0
+func                                  0     10           40               73    0.000000      0
+func                                  0     11           40               52    0.000000      0

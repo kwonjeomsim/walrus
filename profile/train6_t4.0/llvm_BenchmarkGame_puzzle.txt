@@ -1,0 +1,47 @@
+==== Walrus per-function profile (labeled) ====
+# benchmark = llvm_BenchmarkGame_puzzle
+# source    = /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_BenchmarkGame_puzzle.wasm
+# wall_s    = 5.21   rc=0
+function                         module  index  bytecode_sz     self_time_ns   time_frac  label
+$_start                               0      4        34688       5166073237    0.999985      0
+func                                  0      5          240                0    0.000000      0
+func                                  0      6          472            17017    0.000003      0
+func                                  0      7         1416             1398    0.000000      0
+func                                  0      8          728             7659    0.000001      0
+func                                  0      9          488                0    0.000000      0
+func                                  0     10          456              284    0.000000      0
+func                                  0     11          880             6775    0.000001      0
+func                                  0     12         1856                0    0.000000      0
+func                                  0     13          664                0    0.000000      0
+func                                  0     14        43648            32474    0.000006      0
+func                                  0     15         4472             1548    0.000000      0
+func                                  0     16          600                0    0.000000      0
+func                                  0     17          400             6769    0.000001      0
+func                                  0     18           40               75    0.000000      0
+func                                  0     19           40              370    0.000000      0
+func                                  0     20           40               84    0.000000      0
+func                                  0     21           40               59    0.000000      0
+func                                  0     22           40               58    0.000000      0
+func                                  0     23           40               68    0.000000      0
+func                                  0     24           40               63    0.000000      0
+func                                  0     25           40               55    0.000000      0
+func                                  0     26           40               57    0.000000      0
+func                                  0     27           40               64    0.000000      0
+func                                  0     28           40               56    0.000000      0
+func                                  0     29           40               51    0.000000      0
+func                                  0     30           40               51    0.000000      0
+func                                  0     31           40               58    0.000000      0
+func                                  0     32           40               59    0.000000      0
+func                                  0     33           40               50    0.000000      0
+func                                  0     34           40               48    0.000000      0
+func                                  0     35           40               46    0.000000      0
+func                                  0     36           40               50    0.000000      0
+func                                  0     37           40               48    0.000000      0
+func                                  0     38           40               50    0.000000      0
+func                                  0     39           40               51    0.000000      0
+func                                  0     40           40               49    0.000000      0
+func                                  0     41           40               50    0.000000      0
+func                                  0     42           40               52    0.000000      0
+func                                  0     43           40               48    0.000000      0
+func                                  0     44           40               47    0.000000      0
+func                                  0     45           40               46    0.000000      0

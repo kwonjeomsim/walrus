@@ -1,0 +1,20 @@
+==== Walrus per-function profile (labeled) ====
+# benchmark = embench_qrduino
+# source    = /home/soonbkwon/projects/wasmDataset/external/wasm/embench_qrduino.wasm
+# wall_s    = 7.59   rc=0
+function                         module  index  bytecode_sz     self_time_ns   time_frac  label
+$_start                               0      3         2752            11803    0.000002      0
+func                                  0      4        10152       1351495594    0.178992      1
+func                                  0      5         2184        874335598    0.115797      1
+func                                  0      6         4848          6804141    0.000901      0
+func                                  0      7        53592       5314602900    0.703866      0
+func                                  0      8          536          1767919    0.000234      0
+func                                  0      9          560          1570477    0.000208      0
+func                                  0     10           32                0    0.000000      0
+func                                  0     11           32                0    0.000000      0
+func                                  0     12          400                0    0.000000      0
+func                                  0     13        27416             5041    0.000001      0
+func                                  0     14         6936                0    0.000000      0
+func                                  0     15           40               81    0.000000      0
+func                                  0     16           40               43    0.000000      0
+func                                  0     17           40               33    0.000000      0

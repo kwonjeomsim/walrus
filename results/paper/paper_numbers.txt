@@ -1,0 +1,42 @@
+
+#### AArch64
+  summed time (s): interp 2065.2  alljit 280.4  lazy 279.7  tierup 1189.7  O1 1229.7  O2 1154.8  O3 929.0  oracle 334.9
+  summed code (MiB): interp 0.00  alljit 24.63  lazy 15.05  tierup 7.34  O1 0.89  O2 1.76  O3 7.78  oracle 3.74
+  Embedded suites  n=26 time share 16.2%  code share 9.6%  oracle 15.50x/0.130
+  LLVM test-suite  n=25 time share 73.6%  code share 23.7%  oracle 8.96x/0.151
+  Applications     n= 9 time share 10.2%  code share 66.7%  oracle 6.02x/0.156
+  run-to-run CV: median 0.27% over 480 benchmark-mode pairs
+
+#### x86-64
+  summed time (s): interp 381.0  alljit 117.9  lazy 117.9  tierup 249.5  O1 263.3  O2 252.1  O3 209.6  oracle 124.1
+  summed code (MiB): interp 0.00  alljit 19.89  lazy 12.22  tierup 6.09  O1 0.72  O2 1.42  O3 6.40  oracle 3.10
+  Embedded suites  n=26 time share 14.7%  code share 9.6%  oracle 5.92x/0.135
+  LLVM test-suite  n=25 time share 73.1%  code share 23.9%  oracle 3.83x/0.167
+  Applications     n= 9 time share 12.2%  code share 66.5%  oracle 3.73x/0.155
+  run-to-run CV: median 0.32% over 480 benchmark-mode pairs
+
+  interp AArch64/x86 5.42  all-JIT 2.38  all-JIT code AArch64/x86 1.24
+
+#### peak RSS AArch64: interp 775 MiB, all-JIT adds 185.5 MiB
+  lazy    ratio 1.000 [0.904, 1.099]  added 185.6 MiB  +23.9% of interp
+  tierup  ratio 0.536 [0.259, 0.846]  added 99.4 MiB  +12.8% of interp
+  O1      ratio 0.060 [0.012, 0.101]  added 11.2 MiB  +1.4% of interp
+  O2      ratio 0.087 [0.027, 0.148]  added 16.1 MiB  +2.1% of interp
+  O3      ratio 0.483 [0.202, 0.812]  added 89.6 MiB  +11.6% of interp
+  oracle  ratio 0.089 [0.022, 0.173]  added 16.4 MiB  +2.1% of interp
+  O1 - tierup  -0.476 [-0.825, -0.166]  resamples below 0: 100.0%
+  O2 - tierup  -0.449 [-0.808, -0.127]  resamples below 0: 100.0%
+  O3 - tierup  -0.053 [-0.173, +0.010]  resamples below 0: 93.9%
+
+#### peak RSS x86-64: interp 834 MiB, all-JIT adds 193.4 MiB
+  lazy    ratio 1.003 [0.912, 1.101]  added 193.9 MiB  +23.2% of interp
+  tierup  ratio 0.533 [0.270, 0.839]  added 103.1 MiB  +12.4% of interp
+  O1      ratio 0.108 [0.040, 0.167]  added 20.9 MiB  +2.5% of interp
+  O2      ratio 0.138 [0.053, 0.218]  added 26.7 MiB  +3.2% of interp
+  O3      ratio 0.519 [0.269, 0.821]  added 100.3 MiB  +12.0% of interp
+  oracle  ratio 0.127 [0.043, 0.219]  added 24.6 MiB  +2.9% of interp
+  O1 - tierup  -0.425 [-0.795, -0.113]  resamples below 0: 99.9%
+  O2 - tierup  -0.395 [-0.776, -0.069]  resamples below 0: 99.2%
+  O3 - tierup  -0.014 [-0.131, +0.047]  resamples below 0: 64.6%
+
+  K-sweep run vs main run, largest speed-up difference 0.37%

@@ -1,0 +1,45 @@
+==== Walrus per-function profile (labeled) ====
+# benchmark = llvm_Misc_perlin
+# source    = /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_perlin.wasm
+# wall_s    = 21.93   rc=0
+function                         module  index  bytecode_sz     self_time_ns   time_frac  label
+$_start                               0      4        11264      21900041737    0.999998      1
+func                                  0      5          240                0    0.000000      0
+func                                  0      6          472             8058    0.000000      0
+func                                  0      7         1416              654    0.000000      0
+func                                  0      8          728             7889    0.000000      0
+func                                  0      9          488                0    0.000000      0
+func                                  0     10          456              376    0.000000      0
+func                                  0     11          880             2146    0.000000      0
+func                                  0     12         1856                0    0.000000      0
+func                                  0     13          664              507    0.000000      0
+func                                  0     14        43648            11239    0.000001      0
+func                                  0     15         4472              468    0.000000      0
+func                                  0     16          600              258    0.000000      0
+func                                  0     17           40               79    0.000000      0
+func                                  0     18           40             1713    0.000000      0
+func                                  0     19           40               56    0.000000      0
+func                                  0     20           40               78    0.000000      0
+func                                  0     21           40               81    0.000000      0
+func                                  0     22           40               60    0.000000      0
+func                                  0     23           40               55    0.000000      0
+func                                  0     24           40               53    0.000000      0
+func                                  0     25           40               60    0.000000      0
+func                                  0     26           40               51    0.000000      0
+func                                  0     27           40               50    0.000000      0
+func                                  0     28           40               49    0.000000      0
+func                                  0     29           40               44    0.000000      0
+func                                  0     30           40               51    0.000000      0
+func                                  0     31           40               50    0.000000      0
+func                                  0     32           40               45    0.000000      0
+func                                  0     33           40               48    0.000000      0
+func                                  0     34           40               52    0.000000      0
+func                                  0     35           40               48    0.000000      0
+func                                  0     36           40               47    0.000000      0
+func                                  0     37           40               56    0.000000      0
+func                                  0     38           40               44    0.000000      0
+func                                  0     39           40               45    0.000000      0
+func                                  0     40           40               44    0.000000      0
+func                                  0     41           40               43    0.000000      0
+func                                  0     42           40               56    0.000000      0
+func                                  0     43           40               45    0.000000      0

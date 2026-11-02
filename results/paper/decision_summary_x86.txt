@@ -1,0 +1,3 @@
+benchmarks 60
+counters: time median 0.60%  sum 1.58%  instructions median 3.37%  negative 15  interp CV median 0.42%
+predictor: median 0.178 ms  quartiles 0.17-0.40 ms  max 5.5 ms (app_quickjs)  total 0.033 s  added cycles 0.0090% of run time

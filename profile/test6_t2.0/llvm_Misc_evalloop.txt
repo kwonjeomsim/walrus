@@ -1,0 +1,46 @@
+==== Walrus per-function profile (labeled) ====
+# benchmark = llvm_Misc_evalloop
+# source    = /home/soonbkwon/projects/wasmDataset/external/wasm/llvm_Misc_evalloop.wasm
+# wall_s    = 6.28   rc=0
+function                         module  index  bytecode_sz     self_time_ns   time_frac  label
+$_start                               0      4         7280       6261750228    0.999995      1
+func                                  0      5          240                0    0.000000      0
+func                                  0      6          472             8362    0.000001      0
+func                                  0      7         1416              454    0.000000      0
+func                                  0      8          728             7497    0.000001      0
+func                                  0      9          488                0    0.000000      0
+func                                  0     10          456              358    0.000000      0
+func                                  0     11          880             1926    0.000000      0
+func                                  0     12         1856                0    0.000000      0
+func                                  0     13          664                0    0.000000      0
+func                                  0     14        43648             5772    0.000001      0
+func                                  0     15         4472             4437    0.000001      0
+func                                  0     16          600                0    0.000000      0
+func                                  0     17           40               40    0.000000      0
+func                                  0     18           40              209    0.000000      0
+func                                  0     19           40               50    0.000000      0
+func                                  0     20           40               32    0.000000      0
+func                                  0     21           40               27    0.000000      0
+func                                  0     22           40               32    0.000000      0
+func                                  0     23           40               34    0.000000      0
+func                                  0     24           40               30    0.000000      0
+func                                  0     25           40               29    0.000000      0
+func                                  0     26           40               29    0.000000      0
+func                                  0     27           40               29    0.000000      0
+func                                  0     28           40               27    0.000000      0
+func                                  0     29           40               28    0.000000      0
+func                                  0     30           40               26    0.000000      0
+func                                  0     31           40               26    0.000000      0
+func                                  0     32           40               25    0.000000      0
+func                                  0     33           40               23    0.000000      0
+func                                  0     34           40               27    0.000000      0
+func                                  0     35           40               26    0.000000      0
+func                                  0     36           40               26    0.000000      0
+func                                  0     37           40               25    0.000000      0
+func                                  0     38           40               26    0.000000      0
+func                                  0     39           40               25    0.000000      0
+func                                  0     40           40               24    0.000000      0
+func                                  0     41           40               29    0.000000      0
+func                                  0     42           40               29    0.000000      0
+func                                  0     43           40               25    0.000000      0
+func                                  0     44           40               25    0.000000      0

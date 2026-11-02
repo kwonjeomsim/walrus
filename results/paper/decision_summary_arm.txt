@@ -1,0 +1,5 @@
+benchmarks 60
+counters: time median 0.17%  sum 0.67%  instructions median 3.23%  negative 25  interp CV median 1.36%
+predictor: median 0.363 ms  quartiles 0.35-0.83 ms  max 11.7 ms (app_quickjs)  total 0.075 s  added cycles 0.0035% of run time
+  total / interpreted time 0.0036%
+peak RSS: counters change at most 0.13%  predictor adds at most 0.50 MiB at load

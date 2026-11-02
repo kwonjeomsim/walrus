@@ -1,0 +1,16 @@
+==== Walrus per-function profile (labeled) ====
+# benchmark = embench_nettle-aes
+# source    = /home/soonbkwon/projects/wasmDataset/external/wasm/embench_nettle-aes.wasm
+# wall_s    = 8.25   rc=0
+function                         module  index  bytecode_sz     self_time_ns   time_frac  label
+$_start                               0      3         2864            14428    0.000002      0
+func                                  0      4         1752        363281955    0.044189      1
+func                                  0      5        14528       7857809430    0.955809      1
+func                                  0      6           32                0    0.000000      0
+func                                  0      7           32                0    0.000000      0
+func                                  0      8          400                0    0.000000      0
+func                                  0      9        27416             4859    0.000001      0
+func                                  0     10         6936                0    0.000000      0
+func                                  0     11           40               84    0.000000      0
+func                                  0     12           40               33    0.000000      0
+func                                  0     13           40               31    0.000000      0
