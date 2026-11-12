@@ -1,9 +1,8 @@
 # Data behind the paper
 
-This directory holds the measurements reported in "Deciding What to Compile
-Before Running It: Memory-Aware JIT Selection for Embedded WebAssembly Using
-Decision Trees" (Journal of Systems Architecture submission). The training data
-and the trained model live elsewhere in the repository and are listed below.
+This directory holds the measurements reported in "Memory-Aware JIT Selection
+for Embedded WebAssembly Using Decision Trees". The training data and the
+trained model live elsewhere in the repository and are listed below.
 
 All held-out results were measured on a Raspberry Pi 5 (AArch64) unless the
 file name says `x86`. Times are seconds of total run time, including module
